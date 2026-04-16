@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="yi" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>דיעלס — אינוועסטירן קלוג</title>
+  <title>Deals — Invest Heimish</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,14 +15,14 @@
 
     <section class="section" style="background: #F5F0EA; padding-top: 2.5rem;">
       <div class="section-header">
-        <h2 class="section-title">אלע דיעלס</h2>
-        <p class="section-subtitle">קלייב אויס א דיעל וואס פאסט פאר דיר</p>
+        <h2 class="section-title">All Deals</h2>
+        <p class="section-subtitle">Choose a deal that fits you</p>
       </div>
 
       <div class="filter-bar" id="filter-bar">
-        <button class="filter-btn active" data-filter="all">אלע</button>
-        <button class="filter-btn" data-filter="low">נידעריגע ריזיקא</button>
-        <button class="filter-btn" data-filter="medium">מיטעלע ריזיקא</button>
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="low">Low Risk</button>
+        <button class="filter-btn" data-filter="medium">Medium Risk</button>
       </div>
 
       <div class="deals-grid" id="all-deals"></div>
@@ -30,9 +30,9 @@
 
     <!-- CTA band -->
     <section class="cta-band">
-      <h2>זעסט נישט וואס דו זוכסט?</h2>
-      <p>מיר האבן מער דיעלס וואס קומען באלד — לאז אונז וויסן וואס דו זוכסט</p>
-      <a class="btn btn-gold" href="contact.html">רעד מיט אונז</a>
+      <h2>Don't see what you're looking for?</h2>
+      <p>We have more deals coming soon — let us know what you're looking for</p>
+      <a class="btn btn-gold" href="contact.html">Talk to Us</a>
     </section>
 
   </div>
@@ -54,25 +54,25 @@
           '<h3 class="card-title">' + deal.name + '</h3>' +
           '<div class="card-stats">' +
             '<div class="card-stat">' +
-              '<div class="card-stat-label">קויפ פרייז</div>' +
+              '<div class="card-stat-label">Purchase Price</div>' +
               '<div class="card-stat-value">' + fmt(deal.purchasePrice) + '</div>' +
             '</div>' +
             '<div class="card-stat">' +
-              '<div class="card-stat-label">ערווארטעטע פראפיט</div>' +
+              '<div class="card-stat-label">Expected Profit</div>' +
               '<div class="card-stat-value profit">' + fmt(deal.expectedProfit) + '</div>' +
             '</div>' +
             '<div class="card-stat">' +
-              '<div class="card-stat-label">מאנאטל\' איינקונפט</div>' +
+              '<div class="card-stat-label">Monthly Income</div>' +
               '<div class="card-stat-value">' + fmt(deal.monthlyIncome) + '</div>' +
             '</div>' +
             '<div class="card-stat">' +
-              '<div class="card-stat-label">ריזיקא</div>' +
+              '<div class="card-stat-label">Risk</div>' +
               '<div class="card-stat-value"><span class="risk-badge risk-' + deal.riskKey + '">' + deal.riskLevel + '</span></div>' +
             '</div>' +
           '</div>' +
           '<div class="card-footer">' +
-            '<a class="btn btn-primary" href="deal.html?id=' + deal.id + '">מער דעטאלן</a>' +
-            '<a class="btn btn-whatsapp" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">וואטסאפ</a>' +
+            '<a class="btn btn-primary" href="deal.html?id=' + deal.id + '">More Details</a>' +
+            '<a class="btn btn-whatsapp" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">WhatsApp</a>' +
           '</div>' +
         '</div>';
       return card;

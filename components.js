@@ -11,17 +11,17 @@ function renderNavbar() {
   nav.className = "navbar";
   nav.innerHTML =
     '<div class="navbar-inner">' +
-      '<a class="navbar-brand" href="index.html">אינוועסטירן קלוג</a>' +
-      '<button class="menu-toggle" aria-label="מעניו">' +
+      '<a class="navbar-brand" href="index.html">Invest Heimish</a>' +
+      '<button class="menu-toggle" aria-label="Menu">' +
         '<span></span><span></span><span></span>' +
       '</button>' +
       '<nav class="navbar-links">' +
-        '<a href="index.html" class="nav-link' + (current === "index.html" ? " active" : "") + '">הויפט זייט</a>' +
-        '<a href="deals.html" class="nav-link' + (current === "deals.html" || current === "deal.html" ? " active" : "") + '">דיעלס</a>' +
-        '<a href="about.html" class="nav-link' + (current === "about.html" ? " active" : "") + '">וועגן אונז</a>' +
-        '<a href="contact.html" class="nav-link' + (current === "contact.html" ? " active" : "") + '">קאנטאקט</a>' +
+        '<a href="index.html" class="nav-link' + (current === "index.html" ? " active" : "") + '">Home</a>' +
+        '<a href="deals.html" class="nav-link' + (current === "deals.html" || current === "deal.html" ? " active" : "") + '">Deals</a>' +
+        '<a href="about.html" class="nav-link' + (current === "about.html" ? " active" : "") + '">About</a>' +
+        '<a href="contact.html" class="nav-link' + (current === "contact.html" ? " active" : "") + '">Contact</a>' +
       '</nav>' +
-      '<a class="navbar-cta" href="contact.html">רעד מיט אונז</a>' +
+      '<a class="navbar-cta" href="contact.html">Talk to Us</a>' +
     '</div>';
   document.body.prepend(nav);
 
@@ -40,21 +40,21 @@ function renderFooter() {
   footer.innerHTML =
     '<div class="footer-inner">' +
       '<div class="footer-brand">' +
-        '<span class="footer-logo">אינוועסטירן קלוג</span>' +
-        '<p class="footer-tagline">מיט א היימישע האנט</p>' +
+        '<span class="footer-logo">Invest Heimish</span>' +
+        '<p class="footer-tagline">With a local, trusted touch</p>' +
       '</div>' +
       '<div class="footer-links">' +
-        '<a href="index.html">הויפט זייט</a>' +
-        '<a href="deals.html">דיעלס</a>' +
-        '<a href="about.html">וועגן אונז</a>' +
-        '<a href="contact.html">קאנטאקט</a>' +
+        '<a href="index.html">Home</a>' +
+        '<a href="deals.html">Deals</a>' +
+        '<a href="about.html">About</a>' +
+        '<a href="contact.html">Contact</a>' +
       '</div>' +
       '<div class="footer-contact">' +
         '<a href="mailto:' + CONTACT_EMAIL + '">' + CONTACT_EMAIL + '</a>' +
       '</div>' +
     '</div>' +
     '<div class="footer-bottom">' +
-      '<p>&copy; 2025 Invest Heimish. אלע רעכטן רעזערווירט.</p>' +
+      '<p>&copy; 2025 Invest Heimish. All rights reserved.</p>' +
     '</div>';
   document.body.appendChild(footer);
 }
