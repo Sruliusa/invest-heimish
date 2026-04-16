@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="yi" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>קאנטאקט — אינוועסטירן קלוג</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- Hero -->
+    <section class="contact-hero">
+      <h1>רעד מיט אונז</h1>
+      <p>מיר זענען דא צו ענטפערן אלע דיינע פראגעס</p>
+    </section>
+
+    <!-- Contact content -->
+    <section class="section">
+      <div class="contact-grid">
+
+        <!-- Form -->
+        <div class="contact-form" id="contact-form-wrap">
+          <form id="contact-form">
+            <div class="form-group">
+              <label for="name">נאמען</label>
+              <input type="text" id="name" placeholder="דיין נאמען" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">טעלעפאן</label>
+              <input type="tel" id="phone" placeholder="דיין טעלעפאן נומער" required>
+            </div>
+            <div class="form-group">
+              <label for="email">אימעיל (אפציאנאל)</label>
+              <input type="email" id="email" placeholder="דיין אימעיל">
+            </div>
+            <div class="form-group">
+              <label for="interest">וואס אינטערעסירט דיר?</label>
+              <select id="interest">
+                <option value="">קלייב אויס...</option>
+                <option value="specific-deal">א ספעציפישע דיעל</option>
+                <option value="general">אלגעמיינע אינפארמאציע</option>
+                <option value="custom">איך זוך עפעס ספעציעלעס</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">מעסעדזש</label>
+              <textarea id="message" placeholder="שרייב דיין מעסעדזש דא..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem;">שיק מעסעדזש</button>
+          </form>
+
+          <div class="form-success" id="form-success">
+            <h3>דאנק!</h3>
+            <p>מיר האבן באקומען דיין מעסעדזש און מיר וועלן זיך מעלדן באלד.</p>
+          </div>
+        </div>
+
+        <!-- Contact info cards -->
+        <div class="contact-info">
+          <a class="contact-info-card" id="whatsapp-link" href="#" target="_blank" rel="noopener">
+            <div class="contact-icon">💬</div>
+            <div>
+              <h3>וואטסאפ</h3>
+              <p>דער שנעלסטער וועג צו רעדן מיט אונז</p>
+            </div>
+          </a>
+
+          <a class="contact-info-card" id="email-link" href="#">
+            <div class="contact-icon">✉️</div>
+            <div>
+              <h3>אימעיל</h3>
+              <p id="email-display"></p>
+            </div>
+          </a>
+
+          <div class="contact-info-card">
+            <div class="contact-icon">🕐</div>
+            <div>
+              <h3>שעות</h3>
+              <p>זונטאג – דאנערשטאג, 9:00–18:00</p>
+            </div>
+          </div>
+
+          <div class="contact-info-card">
+            <div class="contact-icon">📍</div>
+            <div>
+              <h3>לאקאציע</h3>
+              <p>ניו יארק / ניו דזשערזי</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Wire up contact links
+      var waMsg = encodeURIComponent("שלום, איך וואלט ווילן באקומען מער אינפארמאציע וועגן אינוועסטמענט דיעלס");
+      document.getElementById("whatsapp-link").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + waMsg;
+      document.getElementById("email-link").href = "mailto:" + CONTACT_EMAIL;
+      document.getElementById("email-display").textContent = CONTACT_EMAIL;
+
+      // Form handling (demo — just shows success)
+      document.getElementById("contact-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        this.style.display = "none";
+        document.getElementById("form-success").classList.add("show");
+      });
+    });
+  </script>
+</body>
+</html>

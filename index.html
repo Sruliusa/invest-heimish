@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="yi" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אינוועסטירן קלוג — Invest Heimish</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>אינוועסטירן קלוג — מיט א היימישע האנט</h1>
+      <p class="hero-sub">
+        האסט געלט אין האנט? מיר ווייזן דיר ווי אזוי אריינצוגיין אין ריעל עסטעיט —
+        שריט ביי שריט, מיט פולע באגלייטונג.
+      </p>
+      <div class="hero-buttons">
+        <a class="btn btn-primary" href="deals.html">זע די דיעלס</a>
+        <a class="btn btn-secondary" href="contact.html">רעד מיט אונז</a>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-number">4+</div>
+          <div class="stat-label">אקטיווע דיעלס</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">$340K+</div>
+          <div class="stat-label">ערווארטעטע פראפיט</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">באגלייטונג</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured deals -->
+    <section class="section" style="background: #F5F0EA;">
+      <div class="section-header">
+        <h2 class="section-title">אויסגעקליבענע דיעלס</h2>
+        <p class="section-subtitle">יעדע דיעל — קלאר און פארשטענדליך</p>
+      </div>
+      <div class="deals-grid" id="featured-deals"></div>
+      <div style="text-align:center; margin-top: 2rem;">
+        <a class="btn btn-secondary" href="deals.html">זע אלע דיעלס</a>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">ווי עס ארבעט</h2>
+        <p class="section-subtitle">פיר פשוט'ע שריט צו דיין ערשטע אינוועסטמענט</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-icon">א</div>
+          <h3 class="step-title">אויסקלייבן א דיעל</h3>
+          <p class="step-text">קלארע אינפארמאציע, קיין שום פארהוילענע זאכן</p>
+        </div>
+        <div class="step-card">
+          <div class="step-icon">ב</div>
+          <h3 class="step-title">מיר באגלייטן דיר</h3>
+          <p class="step-text">קאנטרעקטס, לויערס, פינאנצן מיט אונזער הילף</p>
+        </div>
+        <div class="step-card">
+          <div class="step-icon">ג</div>
+          <h3 class="step-title">רענאוואציע</h3>
+          <p class="step-text">פארלעסלעכע קאנטראקטארס, אויפזיכט און פלאנירונג</p>
+        </div>
+        <div class="step-card">
+          <div class="step-icon">ד</div>
+          <h3 class="step-title">פארדינען</h3>
+          <p class="step-text">רענט אדער פארקויפן — מיר העלפן דיר מאכן די בעסטע החלטה</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA band -->
+    <section class="cta-band">
+      <h2>גרייט אנצוהייבן?</h2>
+      <p>לאז אונז דיר ווייזן א דיעל וואס פאסט פאר דיר</p>
+      <a class="btn btn-gold" href="contact.html">רעד מיט אונז</a>
+    </section>
+
+  </div>
+
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var grid = document.getElementById("featured-deals");
+      if (!grid) return;
+
+      // Show first 3 deals on home page
+      var featured = deals.slice(0, 3);
+      featured.forEach(function(deal) {
+        grid.appendChild(createDealCard(deal));
+      });
+    });
+
+    function createDealCard(deal) {
+      var card = document.createElement("article");
+      card.className = "deal-card";
+      card.innerHTML =
+        '<img class="card-image" src="' + deal.image + '" alt="' + deal.name + '" loading="lazy">' +
+        '<div class="card-body">' +
+          '<div class="card-badges">' +
+            '<span class="badge badge-location">' + deal.location + '</span>' +
+            '<span class="badge badge-type">' + deal.propertyType + '</span>' +
+          '</div>' +
+          '<h3 class="card-title">' + deal.name + '</h3>' +
+          '<div class="card-stats">' +
+            '<div class="card-stat">' +
+              '<div class="card-stat-label">קויפ פרייז</div>' +
+              '<div class="card-stat-value">' + fmt(deal.purchasePrice) + '</div>' +
+            '</div>' +
+            '<div class="card-stat">' +
+              '<div class="card-stat-label">ערווארטעטע פראפיט</div>' +
+              '<div class="card-stat-value profit">' + fmt(deal.expectedProfit) + '</div>' +
+            '</div>' +
+            '<div class="card-stat">' +
+              '<div class="card-stat-label">מאנאטל\' איינקונפט</div>' +
+              '<div class="card-stat-value">' + fmt(deal.monthlyIncome) + '</div>' +
+            '</div>' +
+            '<div class="card-stat">' +
+              '<div class="card-stat-label">ריזיקא</div>' +
+              '<div class="card-stat-value"><span class="risk-badge risk-' + deal.riskKey + '">' + deal.riskLevel + '</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card-footer">' +
+            '<a class="btn btn-primary" href="deal.html?id=' + deal.id + '">מער דעטאלן</a>' +
+            '<a class="btn btn-whatsapp" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">וואטסאפ</a>' +
+          '</div>' +
+        '</div>';
+      return card;
+    }
+  </script>
+</body>
+</html>

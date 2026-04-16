@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="yi" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דיעל — אינוועסטירן קלוג</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="page" id="deal-page">
+    <!-- Content injected by JS -->
+  </div>
+
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get("id");
+      var deal = getDealById(id);
+      var page = document.getElementById("deal-page");
+
+      if (!deal) {
+        page.innerHTML =
+          '<div class="empty-state" style="padding: 6rem 1.5rem;">' +
+            '<h3>דיעל נישט געפונען</h3>' +
+            '<p>גיי צוריק צו <a href="deals.html" style="color:#6B2D3E; font-weight:700;">אלע דיעלס</a></p>' +
+          '</div>';
+        return;
+      }
+
+      document.title = deal.name + " — אינוועסטירן קלוג";
+
+      var roi = ((deal.expectedProfit / deal.cashNeeded) * 100).toFixed(0);
+
+      page.innerHTML =
+        '<div class="breadcrumb">' +
+          '<a href="index.html">הויפט זייט</a>' +
+          '<span>/</span>' +
+          '<a href="deals.html">דיעלס</a>' +
+          '<span>/</span>' +
+          deal.name +
+        '</div>' +
+
+        '<section class="deal-hero">' +
+          '<div class="deal-hero-inner">' +
+            '<img class="deal-hero-image" src="' + deal.image + '" alt="' + deal.name + '">' +
+            '<div class="deal-hero-info">' +
+              '<div class="deal-hero-meta">' +
+                '<span class="badge badge-location">' + deal.location + '</span>' +
+                '<span class="badge badge-type">' + deal.propertyType + '</span>' +
+                '<span class="risk-badge risk-' + deal.riskKey + '">' + deal.riskLevel + ' ריזיקא</span>' +
+              '</div>' +
+              '<h1>' + deal.name + '</h1>' +
+              '<p class="deal-hero-desc">' + deal.description + '</p>' +
+              '<div class="deal-hero-buttons">' +
+                '<a class="btn btn-whatsapp" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">שיק וואטסאפ וועגן דעם דיעל</a>' +
+                '<a class="btn btn-secondary" href="contact.html">קאנטאקט אונז</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</section>' +
+
+        '<section class="deal-details">' +
+          '<div class="detail-grid">' +
+
+            '<div class="detail-box">' +
+              '<h3>פינאנציעלע דעטאלן</h3>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">קויפ פרייז</span>' +
+                '<span class="detail-value">' + fmt(deal.purchasePrice) + '</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">רענאוואציע קאסט</span>' +
+                '<span class="detail-value">' + fmt(deal.renovationCost) + '</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">סכום נויטיג (קעש)</span>' +
+                '<span class="detail-value">' + fmt(deal.cashNeeded) + '</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">מינ\' אינוועסטמענט</span>' +
+                '<span class="detail-value">' + fmt(deal.minimumInvestment) + '</span>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="detail-box">' +
+              '<h3>ערווארטעטע פארדינסט</h3>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">שאצונג נאך רענאוואציע</span>' +
+                '<span class="detail-value highlight">' + fmt(deal.postRenovationValue) + '</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">מאנאטליכע איינקונפט</span>' +
+                '<span class="detail-value highlight">' + fmt(deal.monthlyIncome) + '/חודש</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">ערווארטעטע פראפיט</span>' +
+                '<span class="detail-value highlight">' + fmt(deal.expectedProfit) + '</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">ROI</span>' +
+                '<span class="detail-value highlight">' + roi + '%</span>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="detail-box">' +
+              '<h3>פראפערטי דעטאלן</h3>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">לאקאציע</span>' +
+                '<span class="detail-value">' + deal.location + '</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">טייפ</span>' +
+                '<span class="detail-value">' + deal.propertyType + '</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">צימערן / באטהרומען</span>' +
+                '<span class="detail-value">' + deal.bedrooms + ' / ' + deal.bathrooms + '</span>' +
+              '</div>' +
+              '<div class="detail-row">' +
+                '<span class="detail-label">רענאוואציע צייט</span>' +
+                '<span class="detail-value">' + deal.renovationTimeline + '</span>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="detail-box">' +
+              '<h3>מער אינפארמאציע</h3>' +
+              '<div style="padding: 0.5rem 0;">' +
+                '<p class="detail-label" style="margin-bottom: 0.4rem; font-weight: 700;">קאסט ברעיקדאון</p>' +
+                '<p style="font-size: 0.9rem; color: #555; line-height: 1.7;">' + deal.costBreakdown + '</p>' +
+              '</div>' +
+              '<div style="padding: 0.5rem 0; border-top: 1px solid #F5F5F5;">' +
+                '<p class="detail-label" style="margin-bottom: 0.4rem; font-weight: 700;">וואס איז אריינגערעכנט</p>' +
+                '<p style="font-size: 0.9rem; color: #555; line-height: 1.7;">' + deal.whatsIncluded + '</p>' +
+              '</div>' +
+            '</div>' +
+
+          '</div>' +
+        '</section>' +
+
+        '<section class="cta-band">' +
+          '<h2>אינטערעסירט אין דעם דיעל?</h2>' +
+          '<p>שיק אונז א מעסעדזש און מיר וועלן ענטפערן אלע דיינע פראגעס</p>' +
+          '<a class="btn btn-gold" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">שיק וואטסאפ</a>' +
+        '</section>';
+    });
+  </script>
+</body>
+</html>
