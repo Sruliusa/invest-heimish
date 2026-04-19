@@ -12,7 +12,7 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #FAFAF8;
+  background: #F7F7F5;
   color: #1A1A1A;
   line-height: 1.7;
   font-size: 16px;
@@ -32,8 +32,8 @@ button { font-family: inherit; }
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.8rem 1.8rem;
-  border-radius: 10px;
+  padding: 0.8rem 1.9rem;
+  border-radius: 999px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
@@ -42,23 +42,23 @@ button { font-family: inherit; }
 }
 
 .btn-primary {
-  background: #6B2D3E;
+  background: #0B1F3A;
   color: #fff;
 }
-.btn-primary:hover { background: #541f2e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(107,45,62,0.3); }
+.btn-primary:hover { background: #081629; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(11,31,58,0.3); }
 
 .btn-secondary {
   background: transparent;
-  color: #6B2D3E;
-  border: 2px solid #6B2D3E;
+  color: #0B1F3A;
+  border: 2px solid #0B1F3A;
 }
-.btn-secondary:hover { background: #6B2D3E; color: #fff; }
+.btn-secondary:hover { background: #0B1F3A; color: #fff; }
 
 .btn-gold {
-  background: #C8973F;
+  background: #C89B3C;
   color: #fff;
 }
-.btn-gold:hover { background: #B0832E; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(200,151,63,0.3); }
+.btn-gold:hover { background: #A5821E; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(200,155,60,0.3); }
 
 .btn-whatsapp {
   background: #25D366;
@@ -90,11 +90,23 @@ button { font-family: inherit; }
 }
 
 .navbar-brand {
-  font-size: 1.3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: #6B2D3E;
+  color: #0B1F3A;
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
+
+.navbar-brand .brand-mark {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.navbar-brand .brand-heimish { color: #C89B3C; margin-left: 0.22em; }
 
 .navbar-links {
   display: flex;
@@ -111,11 +123,11 @@ button { font-family: inherit; }
   transition: all 0.15s;
 }
 
-.nav-link:hover { background: #F5F0EA; color: #1A1A1A; }
-.nav-link.active { background: #F5EDE5; color: #6B2D3E; font-weight: 700; }
+.nav-link:hover { background: #EFE6DB; color: #1A1A1A; }
+.nav-link.active { background: #EFE6DB; color: #0B1F3A; font-weight: 700; }
 
 .navbar-cta {
-  background: #6B2D3E;
+  background: #0B1F3A;
   color: #fff;
   padding: 0.5rem 1.25rem;
   border-radius: 8px;
@@ -124,7 +136,7 @@ button { font-family: inherit; }
   transition: all 0.2s;
   white-space: nowrap;
 }
-.navbar-cta:hover { background: #541f2e; }
+.navbar-cta:hover { background: #081629; }
 
 /* Mobile menu toggle */
 .menu-toggle {
@@ -173,7 +185,7 @@ button { font-family: inherit; }
 .section-title {
   font-size: clamp(1.5rem, 3.5vw, 2.2rem);
   font-weight: 800;
-  color: #6B2D3E;
+  color: #0B1F3A;
   margin-bottom: 0.75rem;
 }
 
@@ -188,18 +200,30 @@ button { font-family: inherit; }
 /* ── Hero (Home) ──────────────────────────────────────────────────────────── */
 
 .hero {
-  background: linear-gradient(160deg, #FAFAF8 0%, #F5EDE5 50%, #EDE3D5 100%);
+  background: linear-gradient(160deg, #F7F7F5 0%, #EFE6DB 100%);
   text-align: center;
   padding: 5rem 1.5rem 4.5rem;
 }
 
+.hero-eyebrow {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #C89B3C;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+}
+
 .hero h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(2.1rem, 5.2vw, 3.4rem);
   font-weight: 800;
-  color: #6B2D3E;
-  line-height: 1.3;
+  color: #0B1F3A;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   margin-bottom: 1.25rem;
 }
+
+.hero h1 .accent { color: #C89B3C; }
 
 .hero-sub {
   font-size: clamp(1rem, 2.5vw, 1.2rem);
@@ -233,7 +257,7 @@ button { font-family: inherit; }
 .stat-number {
   font-size: 2rem;
   font-weight: 800;
-  color: #C8973F;
+  color: #C89B3C;
   line-height: 1.2;
 }
 
@@ -274,7 +298,7 @@ button { font-family: inherit; }
   width: 100%;
   height: 200px;
   object-fit: cover;
-  background: #EDE3D5;
+  background: #EFE6DB;
 }
 
 .card-body {
@@ -298,8 +322,8 @@ button { font-family: inherit; }
   border-radius: 20px;
 }
 
-.badge-location { background: #EDD9B0; color: #6B4A10; }
-.badge-type { background: #E8D7E8; color: #5A2D6B; }
+.badge-location { background: #EFE6DB; color: #0B1F3A; }
+.badge-type { background: rgba(200,155,60,0.18); color: #7A5C18; }
 
 .card-title {
   font-size: 1.1rem;
@@ -315,7 +339,7 @@ button { font-family: inherit; }
 }
 
 .card-stat {
-  background: #FAFAF8;
+  background: #F7F7F5;
   border-radius: 8px;
   padding: 0.6rem 0.75rem;
   text-align: center;
@@ -391,14 +415,14 @@ button { font-family: inherit; }
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #F5EDE5, #EDD9B0);
+  background: linear-gradient(135deg, #EFE6DB, #C89B3C);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1rem;
   font-size: 1.5rem;
   font-weight: 800;
-  color: #6B2D3E;
+  color: #0B1F3A;
 }
 
 .step-title {
@@ -417,7 +441,7 @@ button { font-family: inherit; }
 /* ── Trust / CTA band ─────────────────────────────────────────────────────── */
 
 .cta-band {
-  background: linear-gradient(135deg, #6B2D3E 0%, #4A1E2B 100%);
+  background: linear-gradient(135deg, #0B1F3A 0%, #081629 100%);
   color: #fff;
   text-align: center;
   padding: 4rem 1.5rem;
@@ -442,7 +466,7 @@ button { font-family: inherit; }
 /* ── Deal detail page ─────────────────────────────────────────────────────── */
 
 .deal-hero {
-  background: linear-gradient(160deg, #FAFAF8, #F5EDE5);
+  background: linear-gradient(160deg, #F7F7F5, #EFE6DB);
   padding: 2.5rem 1.5rem 3rem;
 }
 
@@ -466,7 +490,7 @@ button { font-family: inherit; }
 .deal-hero-info h1 {
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 800;
-  color: #6B2D3E;
+  color: #0B1F3A;
   margin-bottom: 0.75rem;
 }
 
@@ -514,10 +538,10 @@ button { font-family: inherit; }
 .detail-box h3 {
   font-size: 1rem;
   font-weight: 700;
-  color: #6B2D3E;
+  color: #0B1F3A;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #F5EDE5;
+  border-bottom: 2px solid #EFE6DB;
 }
 
 .detail-row {
@@ -545,7 +569,7 @@ button { font-family: inherit; }
 /* ── About page ───────────────────────────────────────────────────────────── */
 
 .about-hero {
-  background: linear-gradient(160deg, #FAFAF8, #F5EDE5);
+  background: linear-gradient(160deg, #F7F7F5, #EFE6DB);
   text-align: center;
   padding: 4rem 1.5rem 3.5rem;
 }
@@ -553,7 +577,7 @@ button { font-family: inherit; }
 .about-hero h1 {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 800;
-  color: #6B2D3E;
+  color: #0B1F3A;
   margin-bottom: 1rem;
 }
 
@@ -591,7 +615,7 @@ button { font-family: inherit; }
   width: 60px;
   height: 60px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #F5EDE5, #EDD9B0);
+  background: linear-gradient(135deg, #EFE6DB, #C89B3C);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -626,7 +650,7 @@ button { font-family: inherit; }
   top: 0;
   bottom: 0;
   width: 2px;
-  background: #EDD9B0;
+  background: #C89B3C;
 }
 
 .timeline-item {
@@ -642,7 +666,7 @@ button { font-family: inherit; }
   height: 42px;
   min-width: 42px;
   border-radius: 50%;
-  background: #6B2D3E;
+  background: #0B1F3A;
   color: #fff;
   display: flex;
   align-items: center;
@@ -668,7 +692,7 @@ button { font-family: inherit; }
 /* ── Contact page ─────────────────────────────────────────────────────────── */
 
 .contact-hero {
-  background: linear-gradient(160deg, #FAFAF8, #F5EDE5);
+  background: linear-gradient(160deg, #F7F7F5, #EFE6DB);
   text-align: center;
   padding: 4rem 1.5rem 3.5rem;
 }
@@ -676,7 +700,7 @@ button { font-family: inherit; }
 .contact-hero h1 {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 800;
-  color: #6B2D3E;
+  color: #0B1F3A;
   margin-bottom: 0.75rem;
 }
 
@@ -721,7 +745,7 @@ button { font-family: inherit; }
   border-radius: 10px;
   font-family: inherit;
   font-size: 0.95rem;
-  background: #FAFAF8;
+  background: #F7F7F5;
   transition: border-color 0.2s;
 }
 
@@ -729,8 +753,8 @@ button { font-family: inherit; }
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #C8973F;
-  box-shadow: 0 0 0 3px rgba(200,151,63,0.1);
+  border-color: #C89B3C;
+  box-shadow: 0 0 0 3px rgba(200,155,60,0.1);
 }
 
 .form-group textarea {
@@ -765,7 +789,7 @@ button { font-family: inherit; }
   height: 48px;
   min-width: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #F5EDE5, #EDD9B0);
+  background: linear-gradient(135deg, #EFE6DB, #C89B3C);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -826,8 +850,8 @@ button { font-family: inherit; }
   transition: all 0.15s;
 }
 
-.filter-btn:hover { border-color: #C8973F; color: #C8973F; }
-.filter-btn.active { background: #6B2D3E; color: #fff; border-color: #6B2D3E; }
+.filter-btn:hover { border-color: #C89B3C; color: #C89B3C; }
+.filter-btn.active { background: #0B1F3A; color: #fff; border-color: #0B1F3A; }
 
 /* ── Breadcrumb ───────────────────────────────────────────────────────────── */
 
@@ -839,7 +863,7 @@ button { font-family: inherit; }
   color: #888;
 }
 
-.breadcrumb a { color: #6B2D3E; font-weight: 500; }
+.breadcrumb a { color: #0B1F3A; font-weight: 500; }
 .breadcrumb a:hover { text-decoration: underline; }
 .breadcrumb span { margin: 0 0.4rem; }
 
@@ -860,10 +884,12 @@ button { font-family: inherit; }
 /* ── Footer ───────────────────────────────────────────────────────────────── */
 
 .footer {
-  background: #1A1218;
-  color: #D0B080;
+  background: #0B1F3A;
+  color: #EFE6DB;
   margin-top: auto;
 }
+
+.footer-logo .brand-heimish { color: #C89B3C; }
 
 .footer-inner {
   max-width: 1200px;
@@ -884,7 +910,8 @@ button { font-family: inherit; }
 
 .footer-tagline {
   font-size: 0.85rem;
-  opacity: 0.6;
+  color: #C89B3C;
+  font-style: italic;
 }
 
 .footer-links {
