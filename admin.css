@@ -348,6 +348,11 @@ tbody td {
 .risk-pill.risk-medium { background: #FFF3CD; color: #7A5000; }
 .risk-pill.risk-high   { background: #FDDCDC; color: #7A1C1C; }
 
+/* ── Sale status pills ───────────────────────────────────────────────────── */
+.status-pill { display: inline-block; padding: 0.3rem 0.7rem; border-radius: var(--r-pill); font-size: 0.75rem; font-weight: 700; }
+.status-pill.status-contract { background: #FFF3CD; color: #7A5000; }
+.status-pill.status-sold     { background: #FDDCDC; color: #7A1C1C; }
+
 /* ── Side panel ──────────────────────────────────────────────────────────── */
 .side-panel {
   position: fixed;

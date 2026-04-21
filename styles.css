@@ -488,6 +488,19 @@ button { font-family: inherit; }
 .risk-medium { background: #FFF3CD; color: #7A5000; }
 .risk-high   { background: #FDDCDC; color: #7A1C1C; }
 
+/* ── Sale status badges ──────────────────────────────────────────────────── */
+.sale-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--r-pill);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.sale-status-contract { background: #FFF3CD; color: #7A5000; }
+.sale-status-sold     { background: #FDDCDC; color: #7A1C1C; }
+
 /* ── Steps / How it works ────────────────────────────────────────────────── */
 .steps-grid {
   display: grid;

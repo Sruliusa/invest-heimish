@@ -34,6 +34,7 @@ function mapDeal(row) {
     whatsIncluded: row.whats_included,
     description: row.description,
     image: row.image,
+    saleStatus: row.sale_status,
   };
 }
 

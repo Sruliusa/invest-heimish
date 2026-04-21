@@ -53,6 +53,7 @@
             '<span class="badge badge-location">' + deal.location + '</span>' +
             '<span class="badge badge-type">' + deal.propertyType + '</span>' +
           '</div>' +
+          (deal.saleStatus ? '<div class="sale-status-badge sale-status-' + deal.saleStatus + '">' + (deal.saleStatus === 'contract' ? 'Contract for Sale' : 'Sold') + '</div>' : '') +
           '<h3 class="card-title">' + deal.name + '</h3>' +
           '<div class="card-stats">' +
             '<div class="card-stat">' +

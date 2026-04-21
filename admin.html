@@ -49,6 +49,7 @@
               <th>Name</th>
               <th>Location</th>
               <th>Risk</th>
+              <th>Status</th>
               <th>Purchase Price</th>
               <th>Actions</th>
             </tr>
@@ -94,6 +95,14 @@
                 <label>Bathrooms</label>
                 <input type="number" id="form-bathrooms" min="0">
               </div>
+            </div>
+            <div class="form-group">
+              <label>Sale Status</label>
+              <select id="form-saleStatus">
+                <option value="">Available</option>
+                <option value="contract">Contract for Sale</option>
+                <option value="sold">Sold</option>
+              </select>
             </div>
           </div>
 
@@ -205,6 +214,11 @@
 
     var editingId = null;
     var riskKeyMap = { Low: 'low', Medium: 'medium', High: 'high' };
+    var saleStatusMap = { contract: 'Contract', sold: 'Sold' };
+    function saleStatusPill(s) {
+      if (!s) return '<span style="color:#999">Available</span>';
+      return '<span class="status-pill status-' + s + '">' + (saleStatusMap[s] || s) + '</span>';
+    }
 
     function showErr(elId, msg) {
       var el = document.getElementById(elId);
@@ -257,6 +271,7 @@
           '<td>' + esc(row.name) + '</td>' +
           '<td>' + esc(row.location || '') + '</td>' +
           '<td><span class="risk-pill risk-' + esc(row.risk_key || '') + '">' + esc(row.risk_level || '') + '</span></td>' +
+          '<td>' + saleStatusPill(row.sale_status) + '</td>' +
           '<td>' + (row.purchase_price ? '$' + Number(row.purchase_price).toLocaleString('en-US') : '—') + '</td>' +
           '<td class="actions-cell">' +
             '<button class="btn-edit" data-id="' + row.id + '">Edit</button>' +
@@ -316,6 +331,7 @@
       document.getElementById('form-whatsIncluded').value = r.whats_included || '';
       document.getElementById('form-description').value = r.description || '';
       document.getElementById('form-image').value = r.image || '';
+      document.getElementById('form-saleStatus').value = r.sale_status || '';
       setImagePreview(r.image);
       document.getElementById('form-error').style.display = 'none';
       openPanel();
@@ -372,6 +388,7 @@
         whats_included:        document.getElementById('form-whatsIncluded').value.trim(),
         description:           document.getElementById('form-description').value.trim(),
         image:                 document.getElementById('form-image').value.trim(),
+        sale_status:           document.getElementById('form-saleStatus').value || null,
       };
 
       var result = editingId

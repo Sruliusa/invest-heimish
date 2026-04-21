@@ -56,6 +56,7 @@
                 '<span class="badge badge-location">' + deal.location + '</span>' +
                 '<span class="badge badge-type">' + deal.propertyType + '</span>' +
                 '<span class="risk-badge risk-' + deal.riskKey + '">' + deal.riskLevel + ' Risk</span>' +
+                (deal.saleStatus ? '<span class="sale-status-badge sale-status-' + deal.saleStatus + '">' + (deal.saleStatus === 'contract' ? 'Contract for Sale' : 'Sold') + '</span>' : '') +
               '</div>' +
               '<h1>' + deal.name + '</h1>' +
               '<p class="deal-hero-desc">' + deal.description + '</p>' +
