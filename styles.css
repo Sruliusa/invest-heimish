@@ -498,8 +498,9 @@ button { font-family: inherit; }
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
-.sale-status-contract { background: #FFF3CD; color: #7A5000; }
-.sale-status-sold     { background: #FDDCDC; color: #7A1C1C; }
+.sale-status-available { background: #D4EDDA; color: #1B5E35; }
+.sale-status-contract  { background: #FFF3CD; color: #7A5000; }
+.sale-status-sold      { background: #FDDCDC; color: #7A1C1C; }
 
 /* ── Steps / How it works ────────────────────────────────────────────────── */
 .steps-grid {
