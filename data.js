@@ -4,7 +4,7 @@ const CONTACT_EMAIL   = "office@investheimish.com";
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function fmt(n) {
-  return "$" + n.toLocaleString("en-US");
+  return n != null ? "$" + Number(n).toLocaleString("en-US") : "—";
 }
 
 function whatsappLink(dealName) {

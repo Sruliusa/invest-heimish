@@ -68,90 +68,119 @@
         <form id="deal-form" novalidate>
           <input type="hidden" id="form-id">
 
-          <div class="form-group">
-            <label>Deal Name *</label>
-            <input type="text" id="form-name" required>
-          </div>
-          <div class="form-group">
-            <label>Location</label>
-            <input type="text" id="form-location" placeholder="e.g. Brooklyn, NY">
-          </div>
-          <div class="form-group">
-            <label>Property Type</label>
-            <input type="text" id="form-propertyType" placeholder="e.g. Two-Family House">
-          </div>
-          <div class="form-row">
+          <!-- Property -->
+          <div class="form-section">
+            <p class="form-section-title">Property</p>
             <div class="form-group">
-              <label>Bedrooms</label>
-              <input type="number" id="form-bedrooms" min="0">
+              <label>Deal Name *</label>
+              <input type="text" id="form-name" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="form-location" placeholder="e.g. Brooklyn, NY">
+              </div>
+              <div class="form-group">
+                <label>Property Type</label>
+                <input type="text" id="form-propertyType" placeholder="e.g. Two-Family House">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Bedrooms</label>
+                <input type="number" id="form-bedrooms" min="0">
+              </div>
+              <div class="form-group">
+                <label>Bathrooms</label>
+                <input type="number" id="form-bathrooms" min="0">
+              </div>
+            </div>
+          </div>
+
+          <!-- Financials -->
+          <div class="form-section">
+            <p class="form-section-title">Financials</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Purchase Price ($)</label>
+                <input type="number" id="form-purchasePrice" min="0">
+              </div>
+              <div class="form-group">
+                <label>Renovation Cost ($)</label>
+                <input type="number" id="form-renovationCost" min="0">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Cash Needed ($)</label>
+                <input type="number" id="form-cashNeeded" min="0">
+              </div>
+              <div class="form-group">
+                <label>Minimum Investment ($)</label>
+                <input type="number" id="form-minimumInvestment" min="0">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Post-Renovation Value ($)</label>
+                <input type="number" id="form-postRenovationValue" min="0">
+              </div>
+              <div class="form-group">
+                <label>Monthly Income ($)</label>
+                <input type="number" id="form-monthlyIncome" min="0">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Expected Profit ($)</label>
+                <input type="number" id="form-expectedProfit" min="0">
+              </div>
+              <div class="form-group">
+                <label>Risk Level</label>
+                <select id="form-riskLevel">
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deal Details -->
+          <div class="form-section">
+            <p class="form-section-title">Deal Details</p>
+            <div class="form-group">
+              <label>Renovation Timeline</label>
+              <input type="text" id="form-renovationTimeline" placeholder="e.g. 4–6 months">
             </div>
             <div class="form-group">
-              <label>Bathrooms</label>
-              <input type="number" id="form-bathrooms" min="0">
+              <label>Cost Breakdown</label>
+              <input type="text" id="form-costBreakdown" placeholder="Purchase: $X | Renov: $Y | ...">
+            </div>
+            <div class="form-group">
+              <label>What's Included</label>
+              <textarea id="form-whatsIncluded" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="form-description" rows="5"></textarea>
             </div>
           </div>
-          <div class="form-group">
-            <label>Purchase Price ($)</label>
-            <input type="number" id="form-purchasePrice" min="0">
-          </div>
-          <div class="form-group">
-            <label>Renovation Cost ($)</label>
-            <input type="number" id="form-renovationCost" min="0">
-          </div>
-          <div class="form-group">
-            <label>Cash Needed ($)</label>
-            <input type="number" id="form-cashNeeded" min="0">
-          </div>
-          <div class="form-group">
-            <label>Minimum Investment ($)</label>
-            <input type="number" id="form-minimumInvestment" min="0">
-          </div>
-          <div class="form-group">
-            <label>Post-Renovation Value ($)</label>
-            <input type="number" id="form-postRenovationValue" min="0">
-          </div>
-          <div class="form-group">
-            <label>Monthly Income ($)</label>
-            <input type="number" id="form-monthlyIncome" min="0">
-          </div>
-          <div class="form-group">
-            <label>Expected Profit ($)</label>
-            <input type="number" id="form-expectedProfit" min="0">
-          </div>
-          <div class="form-group">
-            <label>Risk Level</label>
-            <select id="form-riskLevel">
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Renovation Timeline</label>
-            <input type="text" id="form-renovationTimeline" placeholder="e.g. 4–6 months">
-          </div>
-          <div class="form-group">
-            <label>Cost Breakdown</label>
-            <input type="text" id="form-costBreakdown" placeholder="Purchase: $X | Renov: $Y | ...">
-          </div>
-          <div class="form-group">
-            <label>What's Included</label>
-            <textarea id="form-whatsIncluded" rows="3"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Description</label>
-            <textarea id="form-description" rows="4"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Image URL</label>
-            <input type="text" id="form-image" placeholder="https://...">
-            <img id="form-image-preview" class="image-preview" src="" alt="preview" style="display:none;">
+
+          <!-- Media -->
+          <div class="form-section">
+            <p class="form-section-title">Media</p>
+            <div class="form-group">
+              <label>Image URL</label>
+              <input type="text" id="form-image" placeholder="https://...">
+              <img id="form-image-preview" class="image-preview" src="" alt="preview" style="display:none;">
+            </div>
           </div>
 
           <div id="form-error" class="login-error" style="display:none;"></div>
 
           <div class="form-actions">
-            <button type="submit" class="btn-primary">Save Deal</button>
+            <button type="submit" class="btn-gold">Save Deal</button>
             <button type="button" id="form-cancel-btn" class="btn-secondary">Cancel</button>
           </div>
         </form>
