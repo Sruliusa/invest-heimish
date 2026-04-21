@@ -161,35 +161,36 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
   <script>
+    // ── Init ──────────────────────────────────────────────────────────────────
+    var db;
+    try {
+      var _mod = window.supabase;
+      db = _mod.createClient(
+        'https://owavyvaparyftjxwcocr.supabase.co',
+        'sb_publishable__vWS3AFOBRWqJP3s6xkzOA_chkUkDbA'
+      );
+    } catch (e) {
+      console.error('Supabase init failed:', e);
+    }
+
     var editingId = null;
     var riskKeyMap = { Low: 'low', Medium: 'medium', High: 'high' };
 
-    // ── Auth state ────────────────────────────────────────────────────────────
-    supabase.auth.onAuthStateChange(function(event, session) {
-      if (session) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'flex';
-        loadDealsTable();
-      } else {
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('dashboard').style.display = 'none';
-      }
-    });
+    function showErr(elId, msg) {
+      var el = document.getElementById(elId);
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
 
     // ── Login ─────────────────────────────────────────────────────────────────
     document.getElementById('sign-in-btn').addEventListener('click', async function() {
-      var email = document.getElementById('email').value.trim();
+      document.getElementById('login-error').style.display = 'none';
+      if (!db) { showErr('login-error', 'App not initialized — refresh the page.'); return; }
+      var email    = document.getElementById('email').value.trim();
       var password = document.getElementById('password').value;
-      var errEl = document.getElementById('login-error');
-      errEl.style.display = 'none';
-
-      var result = await supabase.auth.signInWithPassword({ email: email, password: password });
-      if (result.error) {
-        errEl.textContent = result.error.message;
-        errEl.style.display = 'block';
-      }
+      var result   = await db.auth.signInWithPassword({ email: email, password: password });
+      if (result.error) showErr('login-error', result.error.message);
     });
 
     document.getElementById('password').addEventListener('keydown', function(e) {
@@ -198,17 +199,29 @@
 
     // ── Logout ────────────────────────────────────────────────────────────────
     document.getElementById('logout-btn').addEventListener('click', async function() {
-      await supabase.auth.signOut();
+      if (db) await db.auth.signOut();
     });
+
+    // ── Auth state ────────────────────────────────────────────────────────────
+    if (db) {
+      db.auth.onAuthStateChange(function(event, session) {
+        if (session) {
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('dashboard').style.display = 'flex';
+          loadDealsTable();
+        } else {
+          document.getElementById('login-screen').style.display = 'flex';
+          document.getElementById('dashboard').style.display = 'none';
+        }
+      });
+    }
 
     // ── Load deals table ──────────────────────────────────────────────────────
     async function loadDealsTable() {
-      var result = await supabase.from('deals').select('*').order('id');
-      var tbody = document.getElementById('deals-tbody');
+      var result = await db.from('deals').select('*').order('id');
+      var tbody  = document.getElementById('deals-tbody');
       tbody.innerHTML = '';
-
       if (result.error || !result.data) return;
-
       result.data.forEach(function(row) {
         var tr = document.createElement('tr');
         tr.innerHTML =
@@ -222,7 +235,6 @@
           '</td>';
         tbody.appendChild(tr);
       });
-
       tbody.querySelectorAll('.btn-edit').forEach(function(btn) {
         btn.addEventListener('click', function() { openEditPanel(Number(btn.dataset.id)); });
       });
@@ -234,7 +246,7 @@
     // ── Delete ────────────────────────────────────────────────────────────────
     async function deleteDeal(id) {
       if (!confirm('Delete this deal? This cannot be undone.')) return;
-      await supabase.from('deals').delete().eq('id', id);
+      await db.from('deals').delete().eq('id', id);
       loadDealsTable();
     }
 
@@ -251,10 +263,9 @@
 
     // ── Edit panel ────────────────────────────────────────────────────────────
     async function openEditPanel(id) {
-      var result = await supabase.from('deals').select('*').eq('id', id).single();
+      var result = await db.from('deals').select('*').eq('id', id).single();
       if (result.error || !result.data) return;
       var r = result.data;
-
       editingId = id;
       document.getElementById('panel-title').textContent = 'Edit Deal';
       document.getElementById('form-id').value = id;
@@ -286,12 +297,10 @@
       document.getElementById('side-panel').style.display = 'flex';
       document.getElementById('panel-overlay').style.display = 'block';
     }
-
     function closePanel() {
       document.getElementById('side-panel').style.display = 'none';
       document.getElementById('panel-overlay').style.display = 'none';
     }
-
     document.getElementById('close-panel-btn').addEventListener('click', closePanel);
     document.getElementById('form-cancel-btn').addEventListener('click', closePanel);
     document.getElementById('panel-overlay').addEventListener('click', closePanel);
@@ -300,7 +309,6 @@
     document.getElementById('form-image').addEventListener('input', function() {
       setImagePreview(this.value);
     });
-
     function setImagePreview(url) {
       var el = document.getElementById('form-image-preview');
       if (url) { el.src = url; el.style.display = 'block'; }
@@ -310,52 +318,38 @@
     // ── Form submit ───────────────────────────────────────────────────────────
     document.getElementById('deal-form').addEventListener('submit', async function(e) {
       e.preventDefault();
-      var errEl = document.getElementById('form-error');
-      errEl.style.display = 'none';
-
+      document.getElementById('form-error').style.display = 'none';
       var nameVal = document.getElementById('form-name').value.trim();
-      if (!nameVal) {
-        errEl.textContent = 'Deal Name is required.';
-        errEl.style.display = 'block';
-        return;
-      }
+      if (!nameVal) { showErr('form-error', 'Deal Name is required.'); return; }
 
       var riskLevel = document.getElementById('form-riskLevel').value;
       var obj = {
         name: nameVal,
-        location: document.getElementById('form-location').value.trim(),
-        property_type: document.getElementById('form-propertyType').value.trim(),
-        bedrooms: numOrNull('form-bedrooms'),
-        bathrooms: numOrNull('form-bathrooms'),
-        purchase_price: numOrNull('form-purchasePrice'),
-        renovation_cost: numOrNull('form-renovationCost'),
-        cash_needed: numOrNull('form-cashNeeded'),
-        minimum_investment: numOrNull('form-minimumInvestment'),
+        location:              document.getElementById('form-location').value.trim(),
+        property_type:         document.getElementById('form-propertyType').value.trim(),
+        bedrooms:              numOrNull('form-bedrooms'),
+        bathrooms:             numOrNull('form-bathrooms'),
+        purchase_price:        numOrNull('form-purchasePrice'),
+        renovation_cost:       numOrNull('form-renovationCost'),
+        cash_needed:           numOrNull('form-cashNeeded'),
+        minimum_investment:    numOrNull('form-minimumInvestment'),
         post_renovation_value: numOrNull('form-postRenovationValue'),
-        monthly_income: numOrNull('form-monthlyIncome'),
-        expected_profit: numOrNull('form-expectedProfit'),
-        risk_level: riskLevel,
-        risk_key: riskKeyMap[riskLevel] || 'low',
-        renovation_timeline: document.getElementById('form-renovationTimeline').value.trim(),
-        cost_breakdown: document.getElementById('form-costBreakdown').value.trim(),
-        whats_included: document.getElementById('form-whatsIncluded').value.trim(),
-        description: document.getElementById('form-description').value.trim(),
-        image: document.getElementById('form-image').value.trim(),
+        monthly_income:        numOrNull('form-monthlyIncome'),
+        expected_profit:       numOrNull('form-expectedProfit'),
+        risk_level:            riskLevel,
+        risk_key:              riskKeyMap[riskLevel] || 'low',
+        renovation_timeline:   document.getElementById('form-renovationTimeline').value.trim(),
+        cost_breakdown:        document.getElementById('form-costBreakdown').value.trim(),
+        whats_included:        document.getElementById('form-whatsIncluded').value.trim(),
+        description:           document.getElementById('form-description').value.trim(),
+        image:                 document.getElementById('form-image').value.trim(),
       };
 
-      var result;
-      if (editingId) {
-        result = await supabase.from('deals').update(obj).eq('id', editingId);
-      } else {
-        result = await supabase.from('deals').insert([obj]);
-      }
+      var result = editingId
+        ? await db.from('deals').update(obj).eq('id', editingId)
+        : await db.from('deals').insert([obj]);
 
-      if (result.error) {
-        errEl.textContent = result.error.message;
-        errEl.style.display = 'block';
-        return;
-      }
-
+      if (result.error) { showErr('form-error', result.error.message); return; }
       closePanel();
       loadDealsTable();
     });
@@ -365,13 +359,10 @@
       var v = document.getElementById(id).value;
       return v === '' ? null : Number(v);
     }
-
     function esc(str) {
       return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
   </script>
 </body>
