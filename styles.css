@@ -260,7 +260,12 @@ button { font-family: inherit; }
 .hero {
   background: linear-gradient(150deg, var(--navy-deep) 0%, var(--navy-mid) 55%, #152d5e 100%);
   text-align: center;
-  padding: 5.5rem 1.5rem 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
   position: relative;
   overflow: hidden;
 }
@@ -1140,7 +1145,7 @@ button { font-family: inherit; }
 }
 
 @media (max-width: 480px) {
-  .hero { padding: 3.5rem 1.25rem 0; }
+  .hero { padding: 3rem 1.25rem; }
   .deals-grid { grid-template-columns: 1fr; }
   .card-stats { grid-template-columns: 1fr; }
 
@@ -1261,6 +1266,14 @@ button { font-family: inherit; }
   left: 0;
   font-weight: 800;
   color: var(--gold);
+}
+
+.invest-option-return {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-top: auto;
+  padding-top: 0.75rem;
 }
 
 .invest-option-best {
