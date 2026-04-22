@@ -138,7 +138,31 @@ button { font-family: inherit; }
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
+
+.navbar--over-hero {
+  position: fixed;
+  width: 100%;
+  background: transparent;
+  border-bottom-color: rgba(255,255,255,0.1);
+  box-shadow: none;
+}
+
+.navbar--over-hero .nav-link { color: rgba(255,255,255,0.82); }
+.navbar--over-hero .nav-link:hover,
+.navbar--over-hero .nav-link.active { color: var(--gold); }
+.navbar--over-hero .navbar-brand { color: #fff; }
+.navbar--over-hero .navbar-brand .brand-invest,
+.navbar--over-hero .navbar-brand .brand-heimish { color: #fff; }
+.navbar--over-hero .navbar-brand .brand-heimish { color: var(--gold); }
+.navbar--over-hero .menu-toggle span { background: #fff; }
+.navbar--over-hero .navbar-cta {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+}
+.navbar--over-hero .navbar-cta:hover { background: var(--gold); border-color: var(--gold); }
 
 .navbar-inner {
   max-width: 1200px;

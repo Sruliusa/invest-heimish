@@ -13,8 +13,8 @@
 
   <div class="page">
 
-    <!-- Hero -->
-    <section class="hero">
+    <!-- Hero — padded top so content clears the fixed navbar -->
+    <section class="hero" style="padding-top: 6rem;">
       <p class="hero-eyebrow">Real Estate Investing Made Simple</p>
       <h1>Your Partner in<br><span class="accent">Real Estate Investing</span></h1>
       <p class="hero-sub">
@@ -102,7 +102,22 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
+  <script src="data.js"></script>
+  <script src="components.js"></script>
   <script>
+    // Transparent navbar over hero, solid once scrolled
+    var navbar = document.querySelector(".navbar");
+    if (navbar) {
+      navbar.classList.add("navbar--over-hero");
+      window.addEventListener("scroll", function() {
+        if (window.scrollY > 60) {
+          navbar.classList.remove("navbar--over-hero");
+        } else {
+          navbar.classList.add("navbar--over-hero");
+        }
+      });
+    }
+
     document.getElementById("lead-form").addEventListener("submit", async function(e) {
       e.preventDefault();
       var btn = document.getElementById("lead-submit");
