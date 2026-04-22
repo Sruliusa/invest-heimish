@@ -21,6 +21,7 @@ function renderNavbar() {
       '<nav class="navbar-links">' +
         '<a href="index.html" class="nav-link' + (current === "index.html" ? " active" : "") + '">Home</a>' +
         '<a href="deals.html" class="nav-link' + (current === "deals.html" || current === "deal.html" ? " active" : "") + '">Deals</a>' +
+        '<a href="guide.html" class="nav-link' + (current === "guide.html" ? " active" : "") + '">Investor Guide</a>' +
         '<a href="about.html" class="nav-link' + (current === "about.html" ? " active" : "") + '">About</a>' +
         '<a href="contact.html" class="nav-link' + (current === "contact.html" ? " active" : "") + '">Contact</a>' +
       '</nav>' +

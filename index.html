@@ -26,18 +26,6 @@
       </div>
     </section>
 
-    <!-- Featured deals -->
-    <section class="section" style="background: #F5F0EA;">
-      <div class="section-header">
-        <h2 class="section-title">Featured Deals</h2>
-        <p class="section-subtitle">Carefully selected — clear numbers, no surprises</p>
-      </div>
-      <div class="deals-grid" id="featured-deals"></div>
-      <div style="text-align:center; margin-top: 2rem;">
-        <a class="btn btn-secondary" href="deals.html">See All Deals</a>
-      </div>
-    </section>
-
     <!-- Investment tiers -->
     <section class="section">
       <div class="section-header">
@@ -45,27 +33,27 @@
         <p class="section-subtitle">Choose the level that fits your goals</p>
       </div>
       <div class="invest-options-grid">
-        <div class="invest-option invest-option--low">
+        <a class="invest-option invest-option--low" href="deals.html?filter=low">
           <div class="invest-option-label">Low Risk</div>
           <h3 class="invest-option-title">Stable Income</h3>
           <p class="invest-option-sub">Move-in ready or already rented properties. Steady cash flow from day one, no construction needed.</p>
           <p class="invest-option-return">6–10% returns</p>
-          <a class="btn btn-primary" href="deals.html">View Deals</a>
-        </div>
-        <div class="invest-option invest-option--medium">
+          <span class="btn btn-primary" style="align-self:flex-start; margin-top:auto;">View Deals</span>
+        </a>
+        <a class="invest-option invest-option--medium" href="deals.html?filter=medium">
           <div class="invest-option-label">Medium Risk</div>
           <h3 class="invest-option-title">Value-Add</h3>
           <p class="invest-option-sub">Light renovation to increase value and rental income. Option to refinance and pull cash out.</p>
           <p class="invest-option-return">12–20% returns</p>
-          <a class="btn btn-primary" href="deals.html">View Deals</a>
-        </div>
-        <div class="invest-option invest-option--high">
+          <span class="btn btn-primary" style="align-self:flex-start; margin-top:auto;">View Deals</span>
+        </a>
+        <a class="invest-option invest-option--high" href="deals.html?filter=high">
           <div class="invest-option-label">High Return</div>
           <h3 class="invest-option-title">Full Projects</h3>
           <p class="invest-option-sub">Heavy rehab or full construction for maximum profit. Flip or refinance for serious equity gains.</p>
           <p class="invest-option-return">20%+ returns</p>
-          <a class="btn btn-primary" href="deals.html">View Deals</a>
-        </div>
+          <span class="btn btn-primary" style="align-self:flex-start; margin-top:auto;">View Deals</span>
+        </a>
       </div>
     </section>
 
@@ -114,79 +102,29 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
-  <script src="data.js"></script>
-  <script src="components.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", async function() {
-      var grid = document.getElementById("featured-deals");
-      if (grid) {
-        var allDeals = await loadDeals();
-        allDeals.slice(0, 3).forEach(function(deal) {
-          grid.appendChild(createDealCard(deal));
-        });
+    document.getElementById("lead-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      var btn = document.getElementById("lead-submit");
+      var msg = document.getElementById("lead-msg");
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+      var name  = document.getElementById("lead-name").value.trim();
+      var phone = document.getElementById("lead-phone").value.trim();
+      var email = document.getElementById("lead-email").value.trim();
+      try {
+        var res = await supabase.from("leads").insert([{ name: name, phone: phone, email: email }]);
+        if (res.error) throw res.error;
+        msg.textContent = "Thanks! We'll be in touch soon.";
+        msg.style.color = "#2D7A4F";
+        e.target.reset();
+      } catch(err) {
+        msg.textContent = "Something went wrong. Please try again or contact us directly.";
+        msg.style.color = "#DC2626";
       }
-
-      document.getElementById("lead-form").addEventListener("submit", async function(e) {
-        e.preventDefault();
-        var btn = document.getElementById("lead-submit");
-        var msg = document.getElementById("lead-msg");
-        btn.disabled = true;
-        btn.textContent = "Sending...";
-        var name  = document.getElementById("lead-name").value.trim();
-        var phone = document.getElementById("lead-phone").value.trim();
-        var email = document.getElementById("lead-email").value.trim();
-        try {
-          var res = await supabase.from("leads").insert([{ name: name, phone: phone, email: email }]);
-          if (res.error) throw res.error;
-          msg.textContent = "Thanks! We'll be in touch soon.";
-          msg.style.color = "#2D7A4F";
-          e.target.reset();
-        } catch(err) {
-          msg.textContent = "Something went wrong. Please try WhatsApp instead.";
-          msg.style.color = "#DC2626";
-        }
-        btn.disabled = false;
-        btn.textContent = "Submit";
-      });
+      btn.disabled = false;
+      btn.textContent = "Submit";
     });
-
-    function createDealCard(deal) {
-      var card = document.createElement("article");
-      card.className = "deal-card";
-      card.innerHTML =
-        '<img class="card-image" src="' + deal.image + '" alt="' + deal.name + '" loading="lazy">' +
-        '<div class="card-body">' +
-          '<div class="card-badges">' +
-            '<span class="badge badge-location">' + deal.location + '</span>' +
-            '<span class="badge badge-type">' + deal.propertyType + '</span>' +
-          '</div>' +
-          '<div class="sale-status-badge sale-status-' + (deal.saleStatus || 'available') + '">' + (deal.saleStatus === 'contract' ? 'Contract for Sale' : deal.saleStatus === 'sold' ? 'Sold' : 'Available') + '</div>' +
-          '<h3 class="card-title">' + deal.name + '</h3>' +
-          '<div class="card-stats">' +
-            '<div class="card-stat">' +
-              '<div class="card-stat-label">Purchase Price</div>' +
-              '<div class="card-stat-value">' + fmt(deal.purchasePrice) + '</div>' +
-            '</div>' +
-            '<div class="card-stat">' +
-              '<div class="card-stat-label">Expected Profit</div>' +
-              '<div class="card-stat-value profit">' + fmt(deal.expectedProfit) + '</div>' +
-            '</div>' +
-            '<div class="card-stat">' +
-              '<div class="card-stat-label">Monthly Income</div>' +
-              '<div class="card-stat-value">' + fmt(deal.monthlyIncome) + '</div>' +
-            '</div>' +
-            '<div class="card-stat">' +
-              '<div class="card-stat-label">Risk</div>' +
-              '<div class="card-stat-value"><span class="risk-badge risk-' + deal.riskKey + '">' + deal.riskLevel + '</span></div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="card-footer">' +
-            '<a class="btn btn-primary" href="deal.html?id=' + deal.id + '">More Details</a>' +
-            '<a class="btn btn-whatsapp" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">WhatsApp</a>' +
-          '</div>' +
-        '</div>';
-      return card;
-    }
   </script>
 </body>
 </html>

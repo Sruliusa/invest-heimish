@@ -39,6 +39,17 @@
 
       var roi = ((deal.expectedProfit / deal.cashNeeded) * 100).toFixed(0);
 
+      var allImages = deal.images && deal.images.length ? deal.images : [];
+      if (deal.image) allImages = [deal.image].concat(allImages.filter(function(u) { return u !== deal.image; }));
+
+      var galleryHtml = allImages.length > 1
+        ? '<div class="deal-gallery">' +
+            allImages.map(function(url, i) {
+              return '<img class="deal-gallery-thumb' + (i === 0 ? ' active' : '') + '" src="' + url + '" alt="' + deal.name + ' photo ' + (i+1) + '" loading="lazy" onclick="setMainImage(this)">';
+            }).join('') +
+          '</div>'
+        : '';
+
       page.innerHTML =
         '<div class="breadcrumb">' +
           '<a href="index.html">Home</a>' +
@@ -50,7 +61,10 @@
 
         '<section class="deal-hero">' +
           '<div class="deal-hero-inner">' +
-            '<img class="deal-hero-image" src="' + deal.image + '" alt="' + deal.name + '">' +
+            '<div class="deal-hero-media">' +
+              '<img class="deal-hero-image" id="deal-main-image" src="' + (allImages[0] || deal.image) + '" alt="' + deal.name + '">' +
+              galleryHtml +
+            '</div>' +
             '<div class="deal-hero-info">' +
               '<div class="deal-hero-meta">' +
                 '<span class="badge badge-location">' + deal.location + '</span>' +
@@ -61,8 +75,8 @@
               '<h1>' + deal.name + '</h1>' +
               '<p class="deal-hero-desc">' + deal.description + '</p>' +
               '<div class="deal-hero-buttons">' +
-                '<a class="btn btn-whatsapp" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">Send WhatsApp about this deal</a>' +
-                '<a class="btn btn-secondary" href="contact.html">Contact Us</a>' +
+                '<a class="btn btn-gold" href="contact.html">Contact Us</a>' +
+                '<a class="btn btn-secondary" href="deals.html">Back to Deals</a>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -148,10 +162,16 @@
 
         '<section class="cta-band">' +
           '<h2>Interested in this deal?</h2>' +
-          '<p>Send us a message and we\'ll answer all your questions</p>' +
-          '<a class="btn btn-gold" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">Send WhatsApp</a>' +
+          '<p>Contact us and we\'ll answer all your questions</p>' +
+          '<a class="btn btn-gold" href="contact.html">Contact Us</a>' +
         '</section>';
     });
+
+    function setMainImage(thumb) {
+      document.getElementById("deal-main-image").src = thumb.src;
+      document.querySelectorAll(".deal-gallery-thumb").forEach(function(t) { t.classList.remove("active"); });
+      thumb.classList.add("active");
+    }
   </script>
 </body>
 </html>

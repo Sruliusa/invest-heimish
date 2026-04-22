@@ -34,6 +34,7 @@ function mapDeal(row) {
     whatsIncluded: row.whats_included,
     description: row.description,
     image: row.image,
+    images: row.images ? row.images.split('\n').map(function(u) { return u.trim(); }).filter(Boolean) : [],
     saleStatus: row.sale_status,
   };
 }

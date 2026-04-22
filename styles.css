@@ -1152,6 +1152,217 @@ button { font-family: inherit; }
   .hero h1 { font-size: 2rem; }
 }
 
+/* ── Investor Guide ──────────────────────────────────────────────────────── */
+.guide-header {
+  background: linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 60%, #152d5e 100%);
+  text-align: center;
+  padding: 5rem 1.5rem 4rem;
+  position: relative;
+}
+.guide-header h1 {
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.25rem;
+}
+.guide-header-sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.68);
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.guide-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.guide-card {
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.guide-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.guide-icon-green { background: #D4EDDA; color: #1B5E35; }
+.guide-icon-gold  { background: rgba(200,155,60,0.15); color: var(--gold-dark); }
+.guide-icon-navy  { background: rgba(11,31,58,0.1); color: var(--navy); }
+
+.guide-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+}
+
+.guide-card-subhead {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-soft);
+  margin-top: 0.5rem;
+}
+
+.guide-card-body {
+  font-size: 0.92rem;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+
+.guide-example {
+  background: var(--beige-2);
+  border-radius: var(--r-sm);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.guide-example-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: var(--text-mid);
+}
+
+.guide-example-total {
+  border-top: 1px solid var(--border);
+  padding-top: 0.4rem;
+  margin-top: 0.2rem;
+  font-weight: 800;
+  color: var(--navy);
+  font-size: 0.95rem;
+}
+
+.guide-example-block {
+  max-width: 480px;
+  margin: 2.5rem auto 0;
+  background: var(--beige-2);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.guide-example-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+}
+
+.guide-example-note {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  line-height: 1.6;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+}
+
+.guide-roi-ranges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.guide-roi-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.88rem;
+  color: var(--text-mid);
+}
+
+.guide-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  padding-left: 0.25rem;
+}
+
+.guide-list li::before { content: '· '; color: var(--gold); font-weight: 800; }
+.guide-list-check li::before { content: '✓ '; color: #2D7A4F; font-weight: 800; }
+
+.guide-note {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+  font-style: italic;
+  line-height: 1.55;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.25rem;
+}
+
+.guide-steps-list {
+  list-style: none;
+  max-width: 600px;
+  margin: 0 auto;
+  counter-reset: guide-steps;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.guide-steps-list li {
+  counter-increment: guide-steps;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 0.85rem 1.25rem;
+  border: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 0.97rem;
+  color: var(--navy);
+}
+
+.guide-steps-list li::before {
+  content: counter(guide-steps);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
 /* ── Feature list ────────────────────────────────────────────────────────── */
 .feature-list {
   list-style: none;

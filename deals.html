@@ -20,15 +20,15 @@
       </div>
 
       <div class="filter-bar" id="filter-bar">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="low">Low Risk</button>
-        <button class="filter-btn" data-filter="medium">Medium Risk</button>
+        <button class="filter-btn" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="low">Stable Income</button>
+        <button class="filter-btn" data-filter="medium">Value-Add</button>
+        <button class="filter-btn" data-filter="high">Full Projects</button>
       </div>
 
       <div class="deals-grid" id="all-deals"></div>
     </section>
 
-    <!-- CTA band -->
     <section class="cta-band">
       <h2>Don't see what you're looking for?</h2>
       <p>We have more deals coming soon — let us know what you're looking for</p>
@@ -75,10 +75,20 @@
           '</div>' +
           '<div class="card-footer">' +
             '<a class="btn btn-primary" href="deal.html?id=' + deal.id + '">More Details</a>' +
-            '<a class="btn btn-whatsapp" href="' + whatsappLink(deal.name) + '" target="_blank" rel="noopener">WhatsApp</a>' +
           '</div>' +
         '</div>';
       return card;
+    }
+
+    function applyFilter(filter) {
+      var buttons = document.querySelectorAll(".filter-btn");
+      var grid = document.getElementById("all-deals");
+      buttons.forEach(function(b) {
+        b.classList.toggle("active", b.getAttribute("data-filter") === filter);
+      });
+      grid.querySelectorAll(".deal-card").forEach(function(card) {
+        card.style.display = (filter === "all" || card.getAttribute("data-risk") === filter) ? "" : "none";
+      });
     }
 
     document.addEventListener("DOMContentLoaded", async function() {
@@ -88,22 +98,12 @@
         grid.appendChild(createDealCard(deal));
       });
 
-      // Filter logic
-      var buttons = document.querySelectorAll(".filter-btn");
-      buttons.forEach(function(btn) {
-        btn.addEventListener("click", function() {
-          buttons.forEach(function(b) { b.classList.remove("active"); });
-          btn.classList.add("active");
+      var urlFilter = new URLSearchParams(window.location.search).get("filter") || "all";
+      applyFilter(urlFilter);
 
-          var filter = btn.getAttribute("data-filter");
-          var cards = grid.querySelectorAll(".deal-card");
-          cards.forEach(function(card) {
-            if (filter === "all" || card.getAttribute("data-risk") === filter) {
-              card.style.display = "";
-            } else {
-              card.style.display = "none";
-            }
-          });
+      document.querySelectorAll(".filter-btn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          applyFilter(btn.getAttribute("data-filter"));
         });
       });
     });
