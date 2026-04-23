@@ -180,9 +180,17 @@
           <div class="form-section">
             <p class="form-section-title">Media</p>
             <div class="form-group">
-              <label>Image URL</label>
+              <label>Main Image URL</label>
               <input type="text" id="form-image" placeholder="https://...">
               <img id="form-image-preview" class="image-preview" src="" alt="preview" style="display:none;">
+            </div>
+            <div class="form-group">
+              <label>Additional Images</label>
+              <div id="extra-images-list"></div>
+              <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+                <input type="text" id="extra-image-input" placeholder="Paste image URL and click Add" style="flex:1;">
+                <button type="button" id="add-extra-image-btn" class="btn-primary" style="white-space:nowrap; padding:0.5rem 0.9rem;">+ Add</button>
+              </div>
             </div>
           </div>
 
@@ -214,6 +222,27 @@
 
     var editingId = null;
     var riskKeyMap = { Low: 'low', Medium: 'medium', High: 'high' };
+    var extraImages = [];
+
+    function renderExtraImages() {
+      var list = document.getElementById('extra-images-list');
+      list.innerHTML = '';
+      extraImages.forEach(function(url, i) {
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;background:#f9f7f4;border-radius:6px;padding:0.4rem 0.5rem;';
+        row.innerHTML =
+          '<img src="' + url + '" style="width:52px;height:38px;object-fit:cover;border-radius:4px;border:1px solid #e8e2d9;flex-shrink:0;">' +
+          '<span style="flex:1;font-size:0.78rem;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + url + '">' + url + '</span>' +
+          '<button type="button" class="btn-delete" data-i="' + i + '" style="flex-shrink:0;">Remove</button>';
+        list.appendChild(row);
+      });
+      list.querySelectorAll('[data-i]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          extraImages.splice(Number(btn.getAttribute('data-i')), 1);
+          renderExtraImages();
+        });
+      });
+    }
     var saleStatusMap = { contract: 'Contract', sold: 'Sold' };
     function saleStatusPill(s) {
       if (!s) return '<span style="color:#999">Available</span>';
@@ -302,6 +331,8 @@
       document.getElementById('form-id').value = '';
       document.getElementById('form-image-preview').style.display = 'none';
       document.getElementById('form-error').style.display = 'none';
+      extraImages = [];
+      renderExtraImages();
       openPanel();
     });
 
@@ -333,6 +364,8 @@
       document.getElementById('form-image').value = r.image || '';
       document.getElementById('form-saleStatus').value = r.sale_status || '';
       setImagePreview(r.image);
+      extraImages = r.images ? r.images.split('\n').map(function(u){return u.trim();}).filter(Boolean) : [];
+      renderExtraImages();
       document.getElementById('form-error').style.display = 'none';
       openPanel();
     }
@@ -359,6 +392,19 @@
       if (url) { el.src = url; el.style.display = 'block'; }
       else { el.style.display = 'none'; }
     }
+
+    // ── Additional images ─────────────────────────────────────────────────────
+    document.getElementById('add-extra-image-btn').addEventListener('click', function() {
+      var url = document.getElementById('extra-image-input').value.trim();
+      if (url) {
+        extraImages.push(url);
+        document.getElementById('extra-image-input').value = '';
+        renderExtraImages();
+      }
+    });
+    document.getElementById('extra-image-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('add-extra-image-btn').click(); }
+    });
 
     // ── Form submit ───────────────────────────────────────────────────────────
     document.getElementById('deal-form').addEventListener('submit', async function(e) {
@@ -388,6 +434,7 @@
         whats_included:        document.getElementById('form-whatsIncluded').value.trim(),
         description:           document.getElementById('form-description').value.trim(),
         image:                 document.getElementById('form-image').value.trim(),
+        images:                extraImages.length ? extraImages.join('\n') : null,
         sale_status:           document.getElementById('form-saleStatus').value || null,
       };
 
