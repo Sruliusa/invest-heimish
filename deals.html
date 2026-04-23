@@ -74,10 +74,20 @@
             '</div>' +
           '</div>' +
           '<div class="card-footer">' +
-            '<a class="btn btn-primary" href="deal.html?id=' + deal.id + '">More Details</a>' +
+            '<button class="btn btn-primary" onclick="openDeal(\'' + deal.id + '\')">More Details</button>' +
           '</div>' +
         '</div>';
       return card;
+    }
+
+    async function openDeal(id) {
+      var { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        window.location.href = 'deal.html?id=' + id;
+      } else {
+        sessionStorage.setItem('returnUrl', 'deal.html?id=' + id);
+        window.location.href = 'login.html';
+      }
     }
 
     function applyFilter(filter) {

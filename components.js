@@ -63,8 +63,28 @@ function renderFooter() {
   document.body.appendChild(footer);
 }
 
+async function initNavAuth() {
+  if (typeof supabase === "undefined" || !supabase) return;
+  var { data: { user } } = await supabase.auth.getUser();
+  var cta = document.querySelector(".navbar-cta");
+  if (!cta) return;
+  if (user) {
+    cta.textContent = "Sign Out";
+    cta.href = "#";
+    cta.onclick = async function(e) {
+      e.preventDefault();
+      await supabase.auth.signOut();
+      window.location.href = "index.html";
+    };
+  } else {
+    cta.textContent = "Sign In";
+    cta.href = "login.html";
+  }
+}
+
 // Auto-init
 document.addEventListener("DOMContentLoaded", function() {
   renderNavbar();
   renderFooter();
+  initNavAuth();
 });

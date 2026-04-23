@@ -21,6 +21,13 @@
   <script src="components.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async function() {
+      var { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        sessionStorage.setItem('returnUrl', 'deal.html' + window.location.search);
+        window.location.href = 'login.html';
+        return;
+      }
+
       var params = new URLSearchParams(window.location.search);
       var id = params.get("id");
       var deal = await getDealById(id);

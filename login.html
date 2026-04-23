@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Invest Heimish</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <section class="pub-login-screen">
+      <div class="pub-login-card">
+        <div class="pub-login-brand">
+          <h1><span class="brand-invest">Invest</span> <span class="brand-heimish">Heimish</span></h1>
+          <p class="pub-login-sub">Access deal details and invest with us</p>
+        </div>
+
+        <div class="pub-login-tabs">
+          <button class="pub-tab-btn active" data-tab="signin">Sign In</button>
+          <button class="pub-tab-btn" data-tab="signup">Sign Up</button>
+        </div>
+
+        <div id="auth-error" class="pub-login-error" style="display:none;"></div>
+
+        <!-- Sign In -->
+        <form id="signin-form" class="pub-login-form">
+          <div class="form-group">
+            <label for="si-email">Email</label>
+            <input type="email" id="si-email" autocomplete="email" required>
+          </div>
+          <div class="form-group">
+            <label for="si-password">Password</label>
+            <input type="password" id="si-password" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+        </form>
+
+        <!-- Sign Up -->
+        <form id="signup-form" class="pub-login-form" style="display:none;">
+          <div class="form-group">
+            <label for="su-name">Full Name</label>
+            <input type="text" id="su-name" autocomplete="name" required>
+          </div>
+          <div class="form-group">
+            <label for="su-phone">Phone</label>
+            <input type="tel" id="su-phone" autocomplete="tel" required>
+          </div>
+          <div class="form-group">
+            <label for="su-email">Email</label>
+            <input type="email" id="su-email" autocomplete="email" required>
+          </div>
+          <div class="form-group">
+            <label for="su-password">Password</label>
+            <input type="password" id="su-password" autocomplete="new-password" minlength="6" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Create Account</button>
+        </form>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="components.js"></script>
+  <script>
+    function showErr(msg) {
+      var el = document.getElementById('auth-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function clearErr() {
+      document.getElementById('auth-error').style.display = 'none';
+    }
+
+    function redirectAfterAuth() {
+      var target = sessionStorage.getItem('returnUrl') || 'deals.html';
+      sessionStorage.removeItem('returnUrl');
+      window.location.href = target;
+    }
+
+    // If already logged in, skip the page
+    (async function() {
+      var { data: { user } } = await supabase.auth.getUser();
+      if (user) redirectAfterAuth();
+    })();
+
+    // Tab switching
+    document.querySelectorAll('.pub-tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        clearErr();
+        document.querySelectorAll('.pub-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        var tab = btn.getAttribute('data-tab');
+        document.getElementById('signin-form').style.display = tab === 'signin' ? '' : 'none';
+        document.getElementById('signup-form').style.display = tab === 'signup' ? '' : 'none';
+      });
+    });
+
+    // Sign In
+    document.getElementById('signin-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      clearErr();
+      var email    = document.getElementById('si-email').value.trim();
+      var password = document.getElementById('si-password').value;
+      var res = await supabase.auth.signInWithPassword({ email: email, password: password });
+      if (res.error) { showErr(res.error.message); return; }
+      redirectAfterAuth();
+    });
+
+    // Sign Up
+    document.getElementById('signup-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      clearErr();
+      var fullName = document.getElementById('su-name').value.trim();
+      var phone    = document.getElementById('su-phone').value.trim();
+      var email    = document.getElementById('su-email').value.trim();
+      var password = document.getElementById('su-password').value;
+
+      var res = await supabase.auth.signUp({ email: email, password: password });
+      if (res.error) { showErr(res.error.message); return; }
+
+      var userId = res.data.user && res.data.user.id;
+      if (userId) {
+        var p = await supabase.from('profiles').insert([{
+          id: userId, email: email, full_name: fullName, phone: phone
+        }]);
+        if (p.error) { showErr(p.error.message); return; }
+      }
+
+      // If email confirmation is enabled, no session yet — sign in if possible
+      if (!res.data.session) {
+        var si = await supabase.auth.signInWithPassword({ email: email, password: password });
+        if (si.error) {
+          showErr('Account created. Please check your email to confirm, then sign in.');
+          return;
+        }
+      }
+      redirectAfterAuth();
+    });
+  </script>
+</body>
+</html>

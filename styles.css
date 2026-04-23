@@ -1609,3 +1609,95 @@ button { font-family: inherit; }
   .feature-list--two-col { grid-template-columns: 1fr; }
   .lead-form-fields { grid-template-columns: 1fr; }
 }
+
+/* ── Public login page ───────────────────────────────────────────────────── */
+.pub-login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 6rem 1.5rem 4rem;
+  background: linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 55%, var(--navy-mid) 100%);
+  position: relative;
+}
+
+.pub-login-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 55% at 50% -10%, var(--gold-glow) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.pub-login-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2.5rem 2.25rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.28);
+  position: relative;
+  z-index: 1;
+}
+
+.pub-login-brand {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.pub-login-brand h1 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+}
+
+.pub-login-sub {
+  margin-top: 0.35rem;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.pub-login-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--beige-2);
+  padding: 0.35rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.pub-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0.6rem 0.8rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: var(--trans);
+}
+
+.pub-tab-btn:hover { color: var(--navy); }
+
+.pub-tab-btn.active {
+  background: #fff;
+  color: var(--navy);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.pub-login-error {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FEE2E2;
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+}
+
+.pub-login-form .form-group:last-of-type { margin-bottom: 1.5rem; }
+

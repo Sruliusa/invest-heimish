@@ -118,6 +118,8 @@
       });
     }
 
+    if (typeof initNavAuth === "function") initNavAuth();
+
     document.getElementById("lead-form").addEventListener("submit", async function(e) {
       e.preventDefault();
       var btn = document.getElementById("lead-submit");
