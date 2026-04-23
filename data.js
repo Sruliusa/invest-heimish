@@ -36,7 +36,18 @@ function mapDeal(row) {
     image: row.image,
     images: row.images ? row.images.split('\n').map(function(u) { return u.trim(); }).filter(Boolean) : [],
     saleStatus: row.sale_status,
+    strategy: row.strategy,
+    monthlyExpenses: row.monthly_expenses,
+    currentRent: row.current_rent,
+    resalePrice: row.resale_price,
   };
+}
+
+function strategyLabel(key) {
+  if (key === 'tenants') return 'Purchase with Tenants';
+  if (key === 'light')   return 'Light Construction';
+  if (key === 'heavy')   return 'Full Renovation';
+  return null;
 }
 
 async function loadDeals() {

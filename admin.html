@@ -90,6 +90,20 @@
         <form id="deal-form" novalidate>
           <input type="hidden" id="form-id">
 
+          <!-- Strategy -->
+          <div class="form-section">
+            <p class="form-section-title">Strategy</p>
+            <div class="form-group">
+              <label>Investment Strategy *</label>
+              <select id="form-strategy" required>
+                <option value="">— Select a strategy —</option>
+                <option value="tenants">Purchase with Tenants</option>
+                <option value="light">Light Construction</option>
+                <option value="heavy">Full Renovation</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Property -->
           <div class="form-section">
             <p class="form-section-title">Property</p>
@@ -104,7 +118,13 @@
               </div>
               <div class="form-group">
                 <label>Property Type</label>
-                <input type="text" id="form-propertyType" placeholder="e.g. Two-Family House">
+                <select id="form-propertyType">
+                  <option value="">— Select —</option>
+                  <option value="Single Family">Single Family</option>
+                  <option value="Duplex">Duplex</option>
+                  <option value="Triplex">Triplex</option>
+                  <option value="Quadplex">Quadplex</option>
+                </select>
               </div>
             </div>
             <div class="form-row">
@@ -127,43 +147,23 @@
             </div>
           </div>
 
-          <!-- Financials -->
+          <!-- Core Financials (all strategies) -->
           <div class="form-section">
-            <p class="form-section-title">Financials</p>
+            <p class="form-section-title">Core Financials</p>
             <div class="form-row">
               <div class="form-group">
                 <label>Purchase Price ($)</label>
                 <input type="number" id="form-purchasePrice" min="0">
               </div>
               <div class="form-group">
-                <label>Renovation Cost ($)</label>
-                <input type="number" id="form-renovationCost" min="0">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
                 <label>Cash Needed ($)</label>
                 <input type="number" id="form-cashNeeded" min="0">
               </div>
+            </div>
+            <div class="form-row">
               <div class="form-group">
                 <label>Minimum Investment ($)</label>
                 <input type="number" id="form-minimumInvestment" min="0">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Post-Renovation Value ($)</label>
-                <input type="number" id="form-postRenovationValue" min="0">
-              </div>
-              <div class="form-group">
-                <label>Monthly Income ($)</label>
-                <input type="number" id="form-monthlyIncome" min="0">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Expected Profit ($)</label>
-                <input type="number" id="form-expectedProfit" min="0">
               </div>
               <div class="form-group">
                 <label>Risk Level</label>
@@ -176,17 +176,72 @@
             </div>
           </div>
 
-          <!-- Deal Details -->
+          <!-- Rental Numbers (label + which fields change per strategy) -->
+          <div class="form-section" id="rental-section" data-strategy="tenants light heavy">
+            <p class="form-section-title" id="rental-section-title">Rental Numbers</p>
+            <div class="form-group" data-strategy="light">
+              <label>Current Rent — before renovation ($/month)</label>
+              <input type="number" id="form-currentRent" min="0">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label id="label-monthlyIncome">Monthly Income ($)</label>
+                <input type="number" id="form-monthlyIncome" min="0">
+              </div>
+              <div class="form-group" data-strategy="tenants light">
+                <label>Monthly Expenses ($)</label>
+                <input type="number" id="form-monthlyExpenses" min="0">
+              </div>
+            </div>
+            <div data-strategy="tenants" style="background:#f9f7f4;border-radius:6px;padding:0.6rem 0.8rem;font-size:0.85rem;color:#555;margin-top:0.2rem;">
+              <div>Net Monthly Cash Flow: <strong id="computed-netCashFlow">—</strong></div>
+              <div>Cap Rate (annual): <strong id="computed-capRate">—</strong></div>
+            </div>
+          </div>
+
+          <!-- Renovation (light + heavy) -->
+          <div class="form-section" data-strategy="light heavy">
+            <p class="form-section-title">Renovation</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Renovation Cost ($)</label>
+                <input type="number" id="form-renovationCost" min="0">
+              </div>
+              <div class="form-group">
+                <label>Renovation Timeline</label>
+                <input type="text" id="form-renovationTimeline" placeholder="e.g. 4–6 months">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Post-Renovation Value ($)</label>
+                <input type="number" id="form-postRenovationValue" min="0">
+              </div>
+              <div class="form-group" data-strategy="heavy">
+                <label>Resale Price ($, if flipping)</label>
+                <input type="number" id="form-resalePrice" min="0">
+              </div>
+            </div>
+          </div>
+
+          <!-- Returns (heavy only) -->
+          <div class="form-section" data-strategy="heavy">
+            <p class="form-section-title">Returns</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Expected Profit ($)</label>
+                <input type="number" id="form-expectedProfit" min="0">
+              </div>
+              <div class="form-group">
+                <label>Cost Breakdown</label>
+                <input type="text" id="form-costBreakdown" placeholder="Purchase: $X | Renov: $Y | ...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Narrative -->
           <div class="form-section">
-            <p class="form-section-title">Deal Details</p>
-            <div class="form-group">
-              <label>Renovation Timeline</label>
-              <input type="text" id="form-renovationTimeline" placeholder="e.g. 4–6 months">
-            </div>
-            <div class="form-group">
-              <label>Cost Breakdown</label>
-              <input type="text" id="form-costBreakdown" placeholder="Purchase: $X | Renov: $Y | ...">
-            </div>
+            <p class="form-section-title">Description</p>
             <div class="form-group">
               <label>What's Included</label>
               <textarea id="form-whatsIncluded" rows="4"></textarea>
@@ -379,6 +434,56 @@
       loadDealsTable();
     }
 
+    // ── Strategy visibility ───────────────────────────────────────────────────
+    function updateStrategyVisibility() {
+      var strat = document.getElementById('form-strategy').value;
+      document.querySelectorAll('[data-strategy]').forEach(function(el) {
+        var allowed = el.getAttribute('data-strategy').trim().split(/\s+/);
+        el.style.display = (strat && allowed.indexOf(strat) !== -1) ? '' : 'none';
+      });
+      updateStrategyLabels(strat);
+      updateComputed();
+    }
+
+    function updateStrategyLabels(strat) {
+      var lbl = document.getElementById('label-monthlyIncome');
+      var sec = document.getElementById('rental-section-title');
+      if (strat === 'tenants') {
+        lbl.textContent = 'Current Monthly Rent ($)';
+        sec.textContent = 'Rental Numbers';
+      } else if (strat === 'light') {
+        lbl.textContent = 'Projected Monthly Rent — after reno ($)';
+        sec.textContent = 'Rent: Before & After Renovation';
+      } else if (strat === 'heavy') {
+        lbl.textContent = 'Projected Monthly Rent if held ($)';
+        sec.textContent = 'Projected Rental (if held)';
+      } else {
+        lbl.textContent = 'Monthly Income ($)';
+        sec.textContent = 'Rental Numbers';
+      }
+    }
+
+    function updateComputed() {
+      var price   = numOrNull('form-purchasePrice');
+      var income  = numOrNull('form-monthlyIncome');
+      var expense = numOrNull('form-monthlyExpenses');
+      var netEl = document.getElementById('computed-netCashFlow');
+      var capEl = document.getElementById('computed-capRate');
+      if (!netEl || !capEl) return;
+      var net = (income != null && expense != null) ? (income - expense) : null;
+      netEl.textContent = net != null ? ('$' + net.toLocaleString('en-US')) : '—';
+      if (net != null && price) {
+        capEl.textContent = ((net * 12 / price) * 100).toFixed(2) + '%';
+      } else {
+        capEl.textContent = '—';
+      }
+    }
+
+    document.getElementById('form-strategy').addEventListener('change', updateStrategyVisibility);
+    ['form-purchasePrice', 'form-monthlyIncome', 'form-monthlyExpenses'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', updateComputed);
+    });
+
     // ── Add deal button ───────────────────────────────────────────────────────
     document.getElementById('add-deal-btn').addEventListener('click', function() {
       editingId = null;
@@ -389,6 +494,7 @@
       document.getElementById('form-error').style.display = 'none';
       extraImages = [];
       renderExtraImages();
+      updateStrategyVisibility();
       openPanel();
     });
 
@@ -400,6 +506,7 @@
       editingId = id;
       document.getElementById('panel-title').textContent = 'Edit Deal';
       document.getElementById('form-id').value = id;
+      document.getElementById('form-strategy').value = r.strategy || '';
       document.getElementById('form-name').value = r.name || '';
       document.getElementById('form-location').value = r.location || '';
       document.getElementById('form-propertyType').value = r.property_type || '';
@@ -411,6 +518,9 @@
       document.getElementById('form-minimumInvestment').value = r.minimum_investment != null ? r.minimum_investment : '';
       document.getElementById('form-postRenovationValue').value = r.post_renovation_value != null ? r.post_renovation_value : '';
       document.getElementById('form-monthlyIncome').value = r.monthly_income != null ? r.monthly_income : '';
+      document.getElementById('form-monthlyExpenses').value = r.monthly_expenses != null ? r.monthly_expenses : '';
+      document.getElementById('form-currentRent').value = r.current_rent != null ? r.current_rent : '';
+      document.getElementById('form-resalePrice').value = r.resale_price != null ? r.resale_price : '';
       document.getElementById('form-expectedProfit').value = r.expected_profit != null ? r.expected_profit : '';
       document.getElementById('form-riskLevel').value = r.risk_level || 'Low';
       document.getElementById('form-renovationTimeline').value = r.renovation_timeline || '';
@@ -422,6 +532,7 @@
       setImagePreview(r.image);
       extraImages = r.images ? r.images.split('\n').map(function(u){return u.trim();}).filter(Boolean) : [];
       renderExtraImages();
+      updateStrategyVisibility();
       document.getElementById('form-error').style.display = 'none';
       openPanel();
     }
@@ -463,30 +574,45 @@
     });
 
     // ── Form submit ───────────────────────────────────────────────────────────
+    function numForStrategy(strat, id, usedBy) {
+      return usedBy.indexOf(strat) !== -1 ? numOrNull(id) : null;
+    }
+    function textForStrategy(strat, id, usedBy) {
+      if (usedBy.indexOf(strat) === -1) return null;
+      var v = document.getElementById(id).value.trim();
+      return v === '' ? null : v;
+    }
+
     document.getElementById('deal-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       document.getElementById('form-error').style.display = 'none';
       var nameVal = document.getElementById('form-name').value.trim();
       if (!nameVal) { showErr('form-error', 'Deal Name is required.'); return; }
+      var strategy = document.getElementById('form-strategy').value;
+      if (!strategy) { showErr('form-error', 'Strategy is required.'); return; }
 
       var riskLevel = document.getElementById('form-riskLevel').value;
       var obj = {
         name: nameVal,
+        strategy:              strategy,
         location:              document.getElementById('form-location').value.trim(),
-        property_type:         document.getElementById('form-propertyType').value.trim(),
+        property_type:         document.getElementById('form-propertyType').value.trim() || null,
         bedrooms:              numOrNull('form-bedrooms'),
         bathrooms:             numOrNull('form-bathrooms'),
         purchase_price:        numOrNull('form-purchasePrice'),
-        renovation_cost:       numOrNull('form-renovationCost'),
         cash_needed:           numOrNull('form-cashNeeded'),
         minimum_investment:    numOrNull('form-minimumInvestment'),
-        post_renovation_value: numOrNull('form-postRenovationValue'),
-        monthly_income:        numOrNull('form-monthlyIncome'),
-        expected_profit:       numOrNull('form-expectedProfit'),
         risk_level:            riskLevel,
         risk_key:              riskKeyMap[riskLevel] || 'low',
-        renovation_timeline:   document.getElementById('form-renovationTimeline').value.trim(),
-        cost_breakdown:        document.getElementById('form-costBreakdown').value.trim(),
+        monthly_income:        numForStrategy(strategy, 'form-monthlyIncome', ['tenants','light','heavy']),
+        monthly_expenses:      numForStrategy(strategy, 'form-monthlyExpenses', ['tenants','light']),
+        current_rent:          numForStrategy(strategy, 'form-currentRent', ['light']),
+        renovation_cost:       numForStrategy(strategy, 'form-renovationCost', ['light','heavy']),
+        renovation_timeline:   textForStrategy(strategy, 'form-renovationTimeline', ['light','heavy']),
+        post_renovation_value: numForStrategy(strategy, 'form-postRenovationValue', ['light','heavy']),
+        resale_price:          numForStrategy(strategy, 'form-resalePrice', ['heavy']),
+        expected_profit:       numForStrategy(strategy, 'form-expectedProfit', ['heavy']),
+        cost_breakdown:        textForStrategy(strategy, 'form-costBreakdown', ['heavy']),
         whats_included:        document.getElementById('form-whatsIncluded').value.trim(),
         description:           document.getElementById('form-description').value.trim(),
         image:                 document.getElementById('form-image').value.trim(),

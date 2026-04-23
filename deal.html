@@ -44,8 +44,6 @@
 
       document.title = deal.name + " — Invest Heimish";
 
-      var roi = ((deal.expectedProfit / deal.cashNeeded) * 100).toFixed(0);
-
       var allImages = deal.images && deal.images.length ? deal.images : [];
       if (deal.image) allImages = [deal.image].concat(allImages.filter(function(u) { return u !== deal.image; }));
 
@@ -55,6 +53,11 @@
               return '<img class="deal-gallery-thumb' + (i === 0 ? ' active' : '') + '" src="' + url + '" alt="' + deal.name + ' photo ' + (i+1) + '" loading="lazy" onclick="setMainImage(this)">';
             }).join('') +
           '</div>'
+        : '';
+
+      var stratLabel = strategyLabel(deal.strategy);
+      var strategyBadgeHtml = stratLabel
+        ? '<span class="badge badge-type" style="background:#6B2D3E;color:#fff;">' + stratLabel + '</span>'
         : '';
 
       page.innerHTML =
@@ -74,13 +77,14 @@
             '</div>' +
             '<div class="deal-hero-info">' +
               '<div class="deal-hero-meta">' +
+                strategyBadgeHtml +
                 '<span class="badge badge-location">' + deal.location + '</span>' +
                 '<span class="badge badge-type">' + deal.propertyType + '</span>' +
                 '<span class="risk-badge risk-' + deal.riskKey + '">' + deal.riskLevel + ' Risk</span>' +
                 '<span class="sale-status-badge sale-status-' + (deal.saleStatus || 'available') + '">' + (deal.saleStatus === 'contract' ? 'Contract for Sale' : deal.saleStatus === 'sold' ? 'Sold' : 'Available') + '</span>' +
               '</div>' +
               '<h1>' + deal.name + '</h1>' +
-              '<p class="deal-hero-desc">' + deal.description + '</p>' +
+              '<p class="deal-hero-desc">' + (deal.description || '') + '</p>' +
               '<div class="deal-hero-buttons">' +
                 '<a class="btn btn-gold" href="contact.html">Contact Us</a>' +
                 '<a class="btn btn-secondary" href="deals.html">Back to Deals</a>' +
@@ -91,79 +95,10 @@
 
         '<section class="deal-details">' +
           '<div class="detail-grid">' +
-
-            '<div class="detail-box">' +
-              '<h3>Financial Details</h3>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Purchase Price</span>' +
-                '<span class="detail-value">' + fmt(deal.purchasePrice) + '</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Renovation Cost</span>' +
-                '<span class="detail-value">' + fmt(deal.renovationCost) + '</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Cash Needed</span>' +
-                '<span class="detail-value">' + fmt(deal.cashNeeded) + '</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Min. Investment</span>' +
-                '<span class="detail-value">' + fmt(deal.minimumInvestment) + '</span>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="detail-box">' +
-              '<h3>Expected Returns</h3>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Post-Renovation Value</span>' +
-                '<span class="detail-value highlight">' + fmt(deal.postRenovationValue) + '</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Monthly Income</span>' +
-                '<span class="detail-value highlight">' + fmt(deal.monthlyIncome) + '/mo</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Expected Profit</span>' +
-                '<span class="detail-value highlight">' + fmt(deal.expectedProfit) + '</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">ROI</span>' +
-                '<span class="detail-value highlight">' + roi + '%</span>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="detail-box">' +
-              '<h3>Property Details</h3>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Location</span>' +
-                '<span class="detail-value">' + deal.location + '</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Type</span>' +
-                '<span class="detail-value">' + deal.propertyType + '</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Bedrooms / Bathrooms</span>' +
-                '<span class="detail-value">' + deal.bedrooms + ' / ' + deal.bathrooms + '</span>' +
-              '</div>' +
-              '<div class="detail-row">' +
-                '<span class="detail-label">Renovation Timeline</span>' +
-                '<span class="detail-value">' + deal.renovationTimeline + '</span>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="detail-box">' +
-              '<h3>More Information</h3>' +
-              '<div style="padding: 0.5rem 0;">' +
-                '<p class="detail-label" style="margin-bottom: 0.4rem; font-weight: 700;">Cost Breakdown</p>' +
-                '<p style="font-size: 0.9rem; color: #555; line-height: 1.7;">' + deal.costBreakdown + '</p>' +
-              '</div>' +
-              '<div style="padding: 0.5rem 0; border-top: 1px solid #F5F5F5;">' +
-                '<p class="detail-label" style="margin-bottom: 0.4rem; font-weight: 700;">What\'s Included</p>' +
-                '<p style="font-size: 0.9rem; color: #555; line-height: 1.7;">' + deal.whatsIncluded + '</p>' +
-              '</div>' +
-            '</div>' +
-
+            renderFinancialBox(deal) +
+            renderReturnsBox(deal) +
+            renderPropertyBox(deal) +
+            renderMoreBox(deal) +
           '</div>' +
         '</section>' +
 
@@ -173,6 +108,97 @@
           '<a class="btn btn-gold" href="contact.html">Contact Us</a>' +
         '</section>';
     });
+
+    function row(label, value, highlight) {
+      return '<div class="detail-row">' +
+        '<span class="detail-label">' + label + '</span>' +
+        '<span class="detail-value' + (highlight ? ' highlight' : '') + '">' + value + '</span>' +
+      '</div>';
+    }
+
+    function renderFinancialBox(deal) {
+      var parts = '';
+      parts += row('Purchase Price', fmt(deal.purchasePrice));
+      if (deal.strategy === 'light' || deal.strategy === 'heavy' || (!deal.strategy && deal.renovationCost != null)) {
+        parts += row('Renovation Cost', fmt(deal.renovationCost));
+      }
+      parts += row('Cash Needed', fmt(deal.cashNeeded));
+      parts += row('Min. Investment', fmt(deal.minimumInvestment));
+      return '<div class="detail-box"><h3>Financial Details</h3>' + parts + '</div>';
+    }
+
+    function renderReturnsBox(deal) {
+      var parts = '';
+      var title = 'Expected Returns';
+
+      if (deal.strategy === 'tenants') {
+        title = 'Cash Flow';
+        parts += row('Monthly Income', fmt(deal.monthlyIncome) + '/mo', true);
+        parts += row('Monthly Expenses', fmt(deal.monthlyExpenses) + '/mo');
+        if (deal.monthlyIncome != null && deal.monthlyExpenses != null) {
+          var net = deal.monthlyIncome - deal.monthlyExpenses;
+          parts += row('Net Cash Flow', fmt(net) + '/mo', true);
+          if (deal.purchasePrice) {
+            var capRate = (net * 12 / deal.purchasePrice) * 100;
+            parts += row('Cap Rate', capRate.toFixed(2) + '%', true);
+          }
+        }
+      } else if (deal.strategy === 'light') {
+        title = 'Rent: Before & After';
+        parts += row('Current Rent', fmt(deal.currentRent) + '/mo');
+        parts += row('Projected Rent (after reno)', fmt(deal.monthlyIncome) + '/mo', true);
+        parts += row('Monthly Expenses', fmt(deal.monthlyExpenses) + '/mo');
+        parts += row('Post-Renovation Value', fmt(deal.postRenovationValue), true);
+      } else if (deal.strategy === 'heavy') {
+        parts += row('Post-Renovation Value', fmt(deal.postRenovationValue), true);
+        if (deal.resalePrice != null) parts += row('Resale Price', fmt(deal.resalePrice), true);
+        if (deal.monthlyIncome != null) parts += row('Projected Rent (if held)', fmt(deal.monthlyIncome) + '/mo', true);
+        parts += row('Expected Profit', fmt(deal.expectedProfit), true);
+        if (deal.expectedProfit != null && deal.cashNeeded) {
+          var roi = ((deal.expectedProfit / deal.cashNeeded) * 100).toFixed(0);
+          parts += row('ROI', roi + '%', true);
+        }
+      } else {
+        // Legacy fallback for rows saved before strategies were introduced.
+        parts += row('Post-Renovation Value', fmt(deal.postRenovationValue), true);
+        parts += row('Monthly Income', fmt(deal.monthlyIncome) + '/mo', true);
+        parts += row('Expected Profit', fmt(deal.expectedProfit), true);
+        if (deal.expectedProfit != null && deal.cashNeeded) {
+          var roiLegacy = ((deal.expectedProfit / deal.cashNeeded) * 100).toFixed(0);
+          parts += row('ROI', roiLegacy + '%', true);
+        }
+      }
+      return '<div class="detail-box"><h3>' + title + '</h3>' + parts + '</div>';
+    }
+
+    function renderPropertyBox(deal) {
+      var parts = '';
+      parts += row('Location', deal.location || '—');
+      parts += row('Type', deal.propertyType || '—');
+      parts += row('Bedrooms / Bathrooms', (deal.bedrooms != null ? deal.bedrooms : '—') + ' / ' + (deal.bathrooms != null ? deal.bathrooms : '—'));
+      if (deal.renovationTimeline) parts += row('Renovation Timeline', deal.renovationTimeline);
+      return '<div class="detail-box"><h3>Property Details</h3>' + parts + '</div>';
+    }
+
+    function renderMoreBox(deal) {
+      var blocks = '';
+      if (deal.costBreakdown) {
+        blocks +=
+          '<div style="padding: 0.5rem 0;">' +
+            '<p class="detail-label" style="margin-bottom: 0.4rem; font-weight: 700;">Cost Breakdown</p>' +
+            '<p style="font-size: 0.9rem; color: #555; line-height: 1.7;">' + deal.costBreakdown + '</p>' +
+          '</div>';
+      }
+      if (deal.whatsIncluded) {
+        blocks +=
+          '<div style="padding: 0.5rem 0;' + (deal.costBreakdown ? ' border-top: 1px solid #F5F5F5;' : '') + '">' +
+            '<p class="detail-label" style="margin-bottom: 0.4rem; font-weight: 700;">What\'s Included</p>' +
+            '<p style="font-size: 0.9rem; color: #555; line-height: 1.7;">' + deal.whatsIncluded + '</p>' +
+          '</div>';
+      }
+      if (!blocks) return '';
+      return '<div class="detail-box"><h3>More Information</h3>' + blocks + '</div>';
+    }
 
     function setMainImage(thumb) {
       document.getElementById("deal-main-image").src = thumb.src;

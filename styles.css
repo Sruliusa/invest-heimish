@@ -540,6 +540,66 @@ button { font-family: inherit; }
   margin: 0 auto;
 }
 
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (max-width: 640px) {
+  .services-grid { grid-template-columns: 1fr; }
+}
+
+.service-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 0.96rem;
+  color: var(--navy);
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition: var(--trans);
+}
+
+.service-item:hover {
+  border-color: rgba(200,155,60,0.4);
+  transform: translateY(-1px);
+}
+
+.service-mark {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(200,155,60,0.3);
+}
+
+.services-tagline {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.02rem;
+  color: var(--text-mid);
+  font-style: italic;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
+}
+
 .step-card {
   text-align: center;
   padding: 2.25rem 1.5rem;

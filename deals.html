@@ -46,10 +46,15 @@
       var card = document.createElement("article");
       card.className = "deal-card";
       card.setAttribute("data-risk", deal.riskKey);
+      var stratLabel = strategyLabel(deal.strategy);
+      var stratBadge = stratLabel
+        ? '<span class="badge badge-type" style="background:#6B2D3E;color:#fff;">' + stratLabel + '</span>'
+        : '';
       card.innerHTML =
         '<img class="card-image" src="' + deal.image + '" alt="' + deal.name + '" loading="lazy">' +
         '<div class="card-body">' +
           '<div class="card-badges">' +
+            stratBadge +
             '<span class="badge badge-location">' + deal.location + '</span>' +
             '<span class="badge badge-type">' + deal.propertyType + '</span>' +
           '</div>' +
