@@ -1,6 +1,7 @@
 // ── CONFIGURATION ────────────────────────────────────────────────────────────
-const WHATSAPP_NUMBER = "15551234567";
-const CONTACT_EMAIL   = "office@investheimish.com";
+const WHATSAPP_NUMBER = "17184381500";
+const CONTACT_PHONE_DISPLAY = "(718) 438-1500";
+const CONTACT_EMAIL   = "Info@investHeimish.com";
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 function fmt(n) {

@@ -55,6 +55,7 @@ function renderFooter() {
       '</div>' +
       '<div class="footer-contact">' +
         '<a href="mailto:' + CONTACT_EMAIL + '">' + CONTACT_EMAIL + '</a>' +
+        '<a href="tel:+' + WHATSAPP_NUMBER + '">' + CONTACT_PHONE_DISPLAY + '</a>' +
       '</div>' +
     '</div>' +
     '<div class="footer-bottom">' +
@@ -76,6 +77,19 @@ async function initNavAuth() {
       await supabase.auth.signOut();
       window.location.href = "index.html";
     };
+
+    var prof = await supabase.from('profiles').select('is_admin').eq('id', user.id).single();
+    if (prof && prof.data && prof.data.is_admin === true) {
+      var links = document.querySelector('.navbar-links');
+      if (links && !links.querySelector('.nav-admin-link')) {
+        var adminLink = document.createElement('a');
+        adminLink.href = 'admin.html';
+        adminLink.className = 'nav-link nav-admin-link' +
+          (getCurrentPage() === 'admin.html' ? ' active' : '');
+        adminLink.textContent = 'Admin';
+        links.appendChild(adminLink);
+      }
+    }
   } else {
     cta.textContent = "Sign In";
     cta.href = "login.html";

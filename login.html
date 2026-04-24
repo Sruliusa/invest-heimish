@@ -78,16 +78,23 @@
       document.getElementById('auth-error').style.display = 'none';
     }
 
-    function redirectAfterAuth() {
-      var target = sessionStorage.getItem('returnUrl') || 'deals.html';
+    async function isCurrentUserAdmin(userId) {
+      var res = await supabase.from('profiles').select('is_admin').eq('id', userId).single();
+      return !!(res && res.data && res.data.is_admin === true);
+    }
+
+    async function redirectAfterAuth(userId) {
+      var stored = sessionStorage.getItem('returnUrl');
       sessionStorage.removeItem('returnUrl');
-      window.location.href = target;
+      var admin = userId ? await isCurrentUserAdmin(userId) : false;
+      if (admin) { window.location.href = 'admin.html'; return; }
+      window.location.href = stored || 'deals.html';
     }
 
     // If already logged in, skip the page
     (async function() {
       var { data: { user } } = await supabase.auth.getUser();
-      if (user) redirectAfterAuth();
+      if (user) redirectAfterAuth(user.id);
     })();
 
     // Tab switching
@@ -110,7 +117,7 @@
       var password = document.getElementById('si-password').value;
       var res = await supabase.auth.signInWithPassword({ email: email, password: password });
       if (res.error) { showErr(res.error.message); return; }
-      redirectAfterAuth();
+      redirectAfterAuth(res.data.user && res.data.user.id);
     });
 
     // Sign Up
@@ -141,7 +148,7 @@
           return;
         }
       }
-      redirectAfterAuth();
+      redirectAfterAuth(userId);
     });
   </script>
 </body>

@@ -1194,6 +1194,12 @@ button { font-family: inherit; }
 }
 
 .footer-links a,
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
 .footer-contact a {
   font-size: 0.88rem;
   opacity: 0.65;
