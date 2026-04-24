@@ -427,3 +427,110 @@ tbody td {
   z-index: 190;
   backdrop-filter: blur(2px);
 }
+
+/* ── Image upload: drop zone + gallery ──────────────────────────────────── */
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--r-md);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  background: var(--beige-2);
+  transition: var(--trans);
+  cursor: pointer;
+}
+.drop-zone:hover { border-color: var(--gold); background: #fff; }
+.drop-zone.drag-over { border-color: var(--gold); background: rgba(200,155,60,0.08); }
+
+.drop-zone-icon {
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+  line-height: 1;
+}
+.drop-zone-text { font-size: 0.95rem; color: var(--text); margin-bottom: 0.25rem; }
+.drop-zone-hint { font-size: 0.78rem; color: var(--text-soft); }
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--gold-dark);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+}
+.link-btn:hover { color: var(--gold); }
+
+.upload-progress {
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  margin-top: 0.5rem;
+  min-height: 1.1em;
+}
+
+.images-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.image-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.45rem 0.6rem;
+}
+
+.image-thumb {
+  width: 54px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.main-badge {
+  flex-shrink: 0;
+  background: var(--gold);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+}
+
+.image-url {
+  flex: 1;
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.image-actions button {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.url-advanced {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+.url-advanced summary { cursor: pointer; padding: 0.3rem 0; }
+.url-advanced summary:hover { color: var(--text); }

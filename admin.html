@@ -252,22 +252,28 @@
             </div>
           </div>
 
-          <!-- Media -->
+          <!-- Images -->
           <div class="form-section">
-            <p class="form-section-title">Media</p>
-            <div class="form-group">
-              <label>Main Image URL</label>
-              <input type="text" id="form-image" placeholder="https://...">
-              <img id="form-image-preview" class="image-preview" src="" alt="preview" style="display:none;">
+            <p class="form-section-title">Images</p>
+
+            <div id="drop-zone" class="drop-zone">
+              <div class="drop-zone-icon">⇪</div>
+              <p class="drop-zone-text"><strong>Drag images here</strong> or <button type="button" id="file-picker-btn" class="link-btn">choose files</button></p>
+              <p class="drop-zone-hint">PNG, JPG, WebP, or GIF up to 10MB. The first image shown is the main image.</p>
+              <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
             </div>
-            <div class="form-group">
-              <label>Additional Images</label>
-              <div id="extra-images-list"></div>
+
+            <div id="upload-progress" class="upload-progress"></div>
+
+            <div id="images-list" class="images-list"></div>
+
+            <details class="url-advanced">
+              <summary>Add from URL (advanced)</summary>
               <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
-                <input type="text" id="extra-image-input" placeholder="Paste image URL and click Add" style="flex:1;">
-                <button type="button" id="add-extra-image-btn" class="btn-primary" style="white-space:nowrap; padding:0.5rem 0.9rem;">+ Add</button>
+                <input type="text" id="extra-image-input" placeholder="https://..." style="flex:1;">
+                <button type="button" id="add-extra-image-btn" class="btn-secondary" style="white-space:nowrap;">Add URL</button>
               </div>
-            </div>
+            </details>
           </div>
 
           <div id="form-error" class="login-error" style="display:none;"></div>
@@ -298,26 +304,78 @@
 
     var editingId = null;
     var riskKeyMap = { Low: 'low', Medium: 'medium', High: 'high' };
-    var extraImages = [];
+    var images = [];
 
-    function renderExtraImages() {
-      var list = document.getElementById('extra-images-list');
+    function renderImages() {
+      var list = document.getElementById('images-list');
       list.innerHTML = '';
-      extraImages.forEach(function(url, i) {
+      images.forEach(function(url, i) {
         var row = document.createElement('div');
-        row.style.cssText = 'display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;background:#f9f7f4;border-radius:6px;padding:0.4rem 0.5rem;';
+        row.className = 'image-row';
         row.innerHTML =
-          '<img src="' + url + '" style="width:52px;height:38px;object-fit:cover;border-radius:4px;border:1px solid #e8e2d9;flex-shrink:0;">' +
-          '<span style="flex:1;font-size:0.78rem;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + url + '">' + url + '</span>' +
-          '<button type="button" class="btn-delete" data-i="' + i + '" style="flex-shrink:0;">Remove</button>';
+          '<img src="' + url + '" class="image-thumb">' +
+          (i === 0 ? '<span class="main-badge">Main</span>' : '') +
+          '<span class="image-url" title="' + url + '">' + url + '</span>' +
+          '<div class="image-actions">' +
+            (i !== 0 ? '<button type="button" class="btn-secondary btn-set-main" data-i="' + i + '">Set main</button>' : '') +
+            '<button type="button" class="btn-delete btn-remove-image" data-i="' + i + '">Remove</button>' +
+          '</div>';
         list.appendChild(row);
       });
-      list.querySelectorAll('[data-i]').forEach(function(btn) {
+      list.querySelectorAll('.btn-set-main').forEach(function(btn) {
         btn.addEventListener('click', function() {
-          extraImages.splice(Number(btn.getAttribute('data-i')), 1);
-          renderExtraImages();
+          var i = Number(btn.getAttribute('data-i'));
+          var moved = images.splice(i, 1)[0];
+          images.unshift(moved);
+          renderImages();
         });
       });
+      list.querySelectorAll('.btn-remove-image').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          images.splice(Number(btn.getAttribute('data-i')), 1);
+          renderImages();
+        });
+      });
+    }
+
+    async function uploadFile(file) {
+      var ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+      var name = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+      var res = await db.storage.from('deal-images').upload(name, file, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: file.type || undefined,
+      });
+      if (res.error) throw res.error;
+      var pub = db.storage.from('deal-images').getPublicUrl(name);
+      return pub.data.publicUrl;
+    }
+
+    async function handleFiles(fileList) {
+      if (!fileList || !fileList.length) return;
+      var progressEl = document.getElementById('upload-progress');
+      var files = Array.prototype.filter.call(fileList, function(f) {
+        return f.type && f.type.indexOf('image/') === 0;
+      });
+      if (!files.length) {
+        progressEl.textContent = 'No image files selected.';
+        setTimeout(function() { progressEl.textContent = ''; }, 2500);
+        return;
+      }
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        progressEl.textContent = 'Uploading ' + (i + 1) + ' / ' + files.length + ': ' + f.name + '…';
+        try {
+          var url = await uploadFile(f);
+          images.push(url);
+          renderImages();
+        } catch (err) {
+          progressEl.textContent = 'Upload failed for ' + f.name + ': ' + (err.message || 'unknown error');
+          return;
+        }
+      }
+      progressEl.textContent = 'Uploaded ' + files.length + ' file(s).';
+      setTimeout(function() { progressEl.textContent = ''; }, 2500);
     }
     var saleStatusMap = { contract: 'Contract', sold: 'Sold' };
     function saleStatusPill(s) {
@@ -490,10 +548,10 @@
       document.getElementById('panel-title').textContent = 'Add Deal';
       document.getElementById('deal-form').reset();
       document.getElementById('form-id').value = '';
-      document.getElementById('form-image-preview').style.display = 'none';
       document.getElementById('form-error').style.display = 'none';
-      extraImages = [];
-      renderExtraImages();
+      document.getElementById('upload-progress').textContent = '';
+      images = [];
+      renderImages();
       updateStrategyVisibility();
       openPanel();
     });
@@ -527,11 +585,16 @@
       document.getElementById('form-costBreakdown').value = r.cost_breakdown || '';
       document.getElementById('form-whatsIncluded').value = r.whats_included || '';
       document.getElementById('form-description').value = r.description || '';
-      document.getElementById('form-image').value = r.image || '';
       document.getElementById('form-saleStatus').value = r.sale_status || '';
-      setImagePreview(r.image);
-      extraImages = r.images ? r.images.split('\n').map(function(u){return u.trim();}).filter(Boolean) : [];
-      renderExtraImages();
+      images = [];
+      if (r.image) images.push(r.image);
+      if (r.images) {
+        r.images.split('\n').map(function(u){return u.trim();}).filter(Boolean).forEach(function(u) {
+          if (images.indexOf(u) === -1) images.push(u);
+        });
+      }
+      renderImages();
+      document.getElementById('upload-progress').textContent = '';
       updateStrategyVisibility();
       document.getElementById('form-error').style.display = 'none';
       openPanel();
@@ -550,28 +613,45 @@
     document.getElementById('form-cancel-btn').addEventListener('click', closePanel);
     document.getElementById('panel-overlay').addEventListener('click', closePanel);
 
-    // ── Image preview ─────────────────────────────────────────────────────────
-    document.getElementById('form-image').addEventListener('input', function() {
-      setImagePreview(this.value);
-    });
-    function setImagePreview(url) {
-      var el = document.getElementById('form-image-preview');
-      if (url) { el.src = url; el.style.display = 'block'; }
-      else { el.style.display = 'none'; }
-    }
+    // ── Image upload: drop zone + file picker + URL fallback ──────────────────
+    (function() {
+      var dropZone = document.getElementById('drop-zone');
+      var fileInput = document.getElementById('file-input');
+      var pickerBtn = document.getElementById('file-picker-btn');
 
-    // ── Additional images ─────────────────────────────────────────────────────
-    document.getElementById('add-extra-image-btn').addEventListener('click', function() {
-      var url = document.getElementById('extra-image-input').value.trim();
-      if (url) {
-        extraImages.push(url);
-        document.getElementById('extra-image-input').value = '';
-        renderExtraImages();
-      }
-    });
-    document.getElementById('extra-image-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('add-extra-image-btn').click(); }
-    });
+      pickerBtn.addEventListener('click', function() { fileInput.click(); });
+      fileInput.addEventListener('change', function(e) {
+        handleFiles(e.target.files);
+        e.target.value = '';
+      });
+
+      dropZone.addEventListener('click', function(e) {
+        if (e.target === dropZone || e.target.classList.contains('drop-zone-text') || e.target.classList.contains('drop-zone-hint') || e.target.classList.contains('drop-zone-icon')) {
+          fileInput.click();
+        }
+      });
+      ['dragenter', 'dragover'].forEach(function(ev) {
+        dropZone.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('drag-over'); });
+      });
+      ['dragleave', 'drop'].forEach(function(ev) {
+        dropZone.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('drag-over'); });
+      });
+      dropZone.addEventListener('drop', function(e) {
+        if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+      });
+
+      document.getElementById('add-extra-image-btn').addEventListener('click', function() {
+        var url = document.getElementById('extra-image-input').value.trim();
+        if (url) {
+          images.push(url);
+          document.getElementById('extra-image-input').value = '';
+          renderImages();
+        }
+      });
+      document.getElementById('extra-image-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); document.getElementById('add-extra-image-btn').click(); }
+      });
+    })();
 
     // ── Form submit ───────────────────────────────────────────────────────────
     function numForStrategy(strat, id, usedBy) {
@@ -615,8 +695,8 @@
         cost_breakdown:        textForStrategy(strategy, 'form-costBreakdown', ['heavy']),
         whats_included:        document.getElementById('form-whatsIncluded').value.trim(),
         description:           document.getElementById('form-description').value.trim(),
-        image:                 document.getElementById('form-image').value.trim(),
-        images:                extraImages.length ? extraImages.join('\n') : null,
+        image:                 images[0] || null,
+        images:                images.length > 1 ? images.slice(1).join('\n') : null,
         sale_status:           document.getElementById('form-saleStatus').value || null,
       };
 
