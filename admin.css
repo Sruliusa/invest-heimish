@@ -208,6 +208,7 @@ body {
 }
 
 .btn-secondary:hover { background: #E3D8CA; }
+a.btn-secondary { text-decoration: none; display: inline-flex; align-items: center; }
 
 .btn-edit {
   background: #EFF6FF;
