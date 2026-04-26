@@ -280,9 +280,6 @@ a.btn-secondary { text-decoration: none; display: inline-flex; align-items: cent
 .admin-main {
   padding: 2.25rem 2rem;
   flex: 1;
-  max-width: 1160px;
-  width: 100%;
-  margin: 0 auto;
 }
 
 .deals-heading {
@@ -535,3 +532,175 @@ tbody td {
 }
 .url-advanced summary { cursor: pointer; padding: 0.3rem 0; }
 .url-advanced summary:hover { color: var(--text); }
+
+/* ── Admin layout (sidebar + body) ──────────────────────────────────────── */
+.admin-layout {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+.admin-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.admin-sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 110;
+  flex-shrink: 0;
+}
+.sidebar-brand {
+  padding: 1.5rem 1.25rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-brand-text {
+  display: block;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.sidebar-brand-text .brand-gold { color: var(--gold); }
+.sidebar-brand-sub {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.38);
+  margin-top: 0.15rem;
+}
+.sidebar-nav {
+  flex: 1;
+  padding: 0.75rem 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.sidebar-blade {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: none;
+  border: none;
+  border-radius: var(--r-sm);
+  color: rgba(255,255,255,0.55);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+.sidebar-blade .blade-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sidebar-blade:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.85);
+}
+.sidebar-blade.active {
+  background: rgba(200,155,60,0.18);
+  color: var(--gold);
+}
+.sidebar-blade.active .blade-icon { stroke: var(--gold); }
+.sidebar-blade.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: var(--gold);
+  border-radius: 0 3px 3px 0;
+}
+.sidebar-footer {
+  padding: 0.75rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.sidebar-footer-link,
+.sidebar-footer-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--r-sm);
+  color: rgba(255,255,255,0.45);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+.sidebar-footer-link:hover,
+.sidebar-footer-btn:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.75);
+}
+.sidebar-footer-link svg,
+.sidebar-footer-btn svg {
+  width: 16px; height: 16px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* ── Section header (heading + action button inline) ────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.section-header .deals-heading { margin-bottom: 0; }
+
+/* ── Rates card ──────────────────────────────────────────────────────────── */
+.rates-card {
+  background: #fff;
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  padding: 2.25rem 2rem;
+  max-width: 520px;
+}
+.rates-sub {
+  font-size: 0.88rem;
+  color: var(--text-soft);
+  margin-bottom: 1.75rem;
+}
+.rates-last-updated {
+  margin-bottom: 1.25rem;
+  font-size: 0.83rem;
+  color: var(--text-soft);
+}
