@@ -351,6 +351,35 @@ button { font-family: inherit; }
   animation: fadeUp 0.55s 0.35s ease both;
 }
 
+/* ── Rates ticker ─────────────────────────────────────────────────────────── */
+.hero > .rates-ticker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  background: rgba(8,22,41,0.88);
+  border-top: 1px solid rgba(200,155,60,0.30);
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+  padding: 0.6rem 0;
+  z-index: 2;
+}
+
+.rates-ticker__track {
+  display: inline-block;
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.045em;
+  animation: ticker-scroll 32s linear infinite;
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
 /* ── Stats bar (inside hero, glass card) ─────────────────────────────────── */
 .stats-bar {
   display: grid;

@@ -24,6 +24,9 @@
         <a class="btn btn-gold" href="deals.html">View Deals</a>
         <a class="btn btn-outline-white" href="contact.html">Talk to Us</a>
       </div>
+      <div class="rates-ticker" id="rates-ticker">
+        <div class="rates-ticker__track" id="rates-ticker-track"><span>🏦 No-Doc Loan: —% &nbsp;·&nbsp; Bridge Loan: —% &nbsp;·&nbsp; Today's Rates &nbsp;·&nbsp; Call Us Today &nbsp;&nbsp;&nbsp;</span><span>🏦 No-Doc Loan: —% &nbsp;·&nbsp; Bridge Loan: —% &nbsp;·&nbsp; Today's Rates &nbsp;·&nbsp; Call Us Today &nbsp;&nbsp;&nbsp;</span></div>
+      </div>
     </section>
 
     <!-- Investment tiers -->
@@ -137,6 +140,20 @@
     }
 
     if (typeof initNavAuth === "function") initNavAuth();
+
+    // Rates ticker — fetch live rates and populate the scrolling strip
+    (async function() {
+      var track = document.getElementById('rates-ticker-track');
+      if (!track) return;
+      try {
+        var res = await supabase.from('rates').select('*').single();
+        if (res.error || !res.data) return;
+        var d = res.data;
+        var sep = '  ·  ';
+        var text = '🏦 No-Doc Loan: ' + d.no_doc_rate + '%' + sep + 'Bridge Loan: ' + d.bridge_loan_rate + '%' + sep + d.label + sep + 'Call Us Today      ';
+        track.innerHTML = '<span>' + text + '</span><span>' + text + '</span>';
+      } catch (e) { /* keep placeholder */ }
+    })();
 
     document.getElementById("lead-form").addEventListener("submit", async function(e) {
       e.preventDefault();
