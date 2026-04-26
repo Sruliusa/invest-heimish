@@ -69,6 +69,8 @@
   <script src="supabase-config.js"></script>
   <script src="components.js"></script>
   <script>
+    var redirecting = false;
+
     function showErr(msg) {
       var el = document.getElementById('auth-error');
       el.textContent = msg;
@@ -84,12 +86,21 @@
     }
 
     async function redirectAfterAuth(userId) {
+      if (redirecting) return;
+      redirecting = true;
       var stored = sessionStorage.getItem('returnUrl');
       sessionStorage.removeItem('returnUrl');
       var admin = userId ? await isCurrentUserAdmin(userId) : false;
       if (admin) { window.location.href = 'admin.html'; return; }
       window.location.href = stored || 'deals.html';
     }
+
+    // Handle invite token auto-sign-in (fires when invite link is clicked)
+    supabase.auth.onAuthStateChange(function(event, session) {
+      if (event === 'SIGNED_IN' && session && session.user) {
+        redirectAfterAuth(session.user.id);
+      }
+    });
 
     // If already logged in, skip the page
     (async function() {

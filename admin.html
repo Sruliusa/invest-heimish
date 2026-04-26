@@ -70,7 +70,24 @@
       <section id="users-section" style="display:none;">
         <div class="section-header">
           <h2 class="deals-heading">All Users</h2>
+          <button id="invite-user-btn" class="btn-gold">+ Invite Admin</button>
         </div>
+
+        <div id="invite-form-wrap" class="invite-wrap" style="display:none;">
+          <div class="invite-card">
+            <p class="invite-title">Invite Admin User</p>
+            <div style="display:flex;gap:0.75rem;align-items:flex-end;">
+              <div class="form-group" style="flex:1;margin-bottom:0;">
+                <label for="invite-email">Email address</label>
+                <input type="email" id="invite-email" placeholder="user@example.com">
+              </div>
+              <button id="send-invite-btn" class="btn-gold">Send Invite</button>
+              <button id="cancel-invite-btn" class="btn-secondary">Cancel</button>
+            </div>
+            <p id="invite-msg" style="margin-top:0.75rem;font-size:0.85rem;min-height:1.2em;"></p>
+          </div>
+        </div>
+
         <div class="table-wrapper">
           <table id="users-table">
             <thead>
@@ -79,6 +96,8 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Joined</th>
+                <th>Role</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="users-tbody"></tbody>
@@ -340,6 +359,17 @@
       console.error('Supabase init failed:', e);
     }
 
+    var dbAdmin;
+    try {
+      dbAdmin = window.supabase.createClient(
+        'https://owavyvaparyftjxwcocr.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93YXZ5dmFwYXJ5ZnRqeHdjb2NyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjYzNDc1MiwiZXhwIjoyMDkyMjEwNzUyfQ.YQuthA1vBeECp1eTP3SeS7tB9MrsjjND0kFZTxjOvDU',
+        { auth: { autoRefreshToken: false, persistSession: false } }
+      );
+    } catch (e) {
+      console.error('Supabase admin init failed:', e);
+    }
+
     var editingId = null;
     var riskKeyMap = { Low: 'low', Medium: 'medium', High: 'high' };
     var images = [];
@@ -471,28 +501,108 @@
 
     // ── Load users table ──────────────────────────────────────────────────────
     async function loadUsersTable() {
-      var result = await db.from('profiles').select('*').order('created_at', { ascending: false });
-      var tbody  = document.getElementById('users-tbody');
+      var tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = '<tr><td colspan="6" style="color:#777;padding:1.2rem 1.1rem;">Loading…</td></tr>';
+
+      var authRes = await dbAdmin.auth.admin.listUsers({ perPage: 1000 });
+      if (authRes.error) {
+        tbody.innerHTML = '<tr><td colspan="6" style="color:#DC2626;">' + esc(authRes.error.message) + '</td></tr>';
+        return;
+      }
+
+      var profRes = await dbAdmin.from('profiles').select('*');
+      var profiles = {};
+      if (profRes.data) profRes.data.forEach(function(p) { profiles[p.id] = p; });
+
+      var users = authRes.data.users;
       tbody.innerHTML = '';
-      if (result.error) {
-        tbody.innerHTML = '<tr><td colspan="4" style="color:#DC2626;">' + esc(result.error.message) + '</td></tr>';
+      if (!users.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="color:#777;">No users yet.</td></tr>';
         return;
       }
-      if (!result.data || !result.data.length) {
-        tbody.innerHTML = '<tr><td colspan="4" style="color:#777;">No users yet.</td></tr>';
-        return;
-      }
-      result.data.forEach(function(row) {
-        var joined = row.created_at ? new Date(row.created_at).toLocaleDateString('en-US') : '';
+
+      users.forEach(function(u) {
+        var prof = profiles[u.id] || {};
+        var isAdmin = prof.is_admin === true;
+        var joined = u.created_at ? new Date(u.created_at).toLocaleDateString('en-US') : '';
+        var roleBadge = isAdmin
+          ? '<span class="role-badge role-admin">Admin</span>'
+          : '<span class="role-badge role-user">User</span>';
+        var toggleBtn = isAdmin
+          ? '<button class="btn-delete btn-toggle-admin" data-id="' + u.id + '" data-admin="true">Remove Admin</button>'
+          : '<button class="btn-edit btn-toggle-admin" data-id="' + u.id + '" data-admin="false">Make Admin</button>';
         var tr = document.createElement('tr');
         tr.innerHTML =
-          '<td>' + esc(row.full_name || '') + '</td>' +
-          '<td>' + esc(row.email || '') + '</td>' +
-          '<td>' + esc(row.phone || '') + '</td>' +
-          '<td>' + esc(joined) + '</td>';
+          '<td>' + esc(prof.full_name || (u.user_metadata && u.user_metadata.full_name) || '—') + '</td>' +
+          '<td>' + esc(u.email || '') + '</td>' +
+          '<td>' + esc(prof.phone || '') + '</td>' +
+          '<td>' + esc(joined) + '</td>' +
+          '<td>' + roleBadge + '</td>' +
+          '<td class="actions-cell">' + toggleBtn + '</td>';
         tbody.appendChild(tr);
       });
+
+      tbody.querySelectorAll('.btn-toggle-admin').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          toggleAdmin(btn.getAttribute('data-id'), btn.getAttribute('data-admin') === 'true');
+        });
+      });
     }
+
+    async function toggleAdmin(userId, currentlyAdmin) {
+      var res = await dbAdmin.from('profiles').upsert(
+        { id: userId, is_admin: !currentlyAdmin },
+        { onConflict: 'id' }
+      );
+      if (res.error) { alert('Error: ' + res.error.message); return; }
+      loadUsersTable();
+    }
+
+    // ── Invite user ───────────────────────────────────────────────────────────
+    document.getElementById('invite-user-btn').addEventListener('click', function() {
+      var wrap = document.getElementById('invite-form-wrap');
+      wrap.style.display = wrap.style.display === 'none' ? '' : 'none';
+      document.getElementById('invite-email').value = '';
+      document.getElementById('invite-msg').textContent = '';
+    });
+
+    document.getElementById('cancel-invite-btn').addEventListener('click', function() {
+      document.getElementById('invite-form-wrap').style.display = 'none';
+    });
+
+    document.getElementById('send-invite-btn').addEventListener('click', async function() {
+      var email  = document.getElementById('invite-email').value.trim();
+      var msgEl  = document.getElementById('invite-msg');
+      var btn    = document.getElementById('send-invite-btn');
+      msgEl.textContent = '';
+      if (!email) { msgEl.textContent = 'Please enter an email.'; msgEl.style.color = '#DC2626'; return; }
+      btn.disabled = true; btn.textContent = 'Sending…';
+
+      var redirectTo = window.location.href.replace('admin.html', 'login.html');
+      var res = await dbAdmin.auth.admin.inviteUserByEmail(email, { redirectTo: redirectTo });
+      if (res.error) {
+        msgEl.textContent = 'Error: ' + res.error.message;
+        msgEl.style.color = '#DC2626';
+        btn.disabled = false; btn.textContent = 'Send Invite';
+        return;
+      }
+
+      var userId = res.data && res.data.user && res.data.user.id;
+      if (userId) {
+        await dbAdmin.from('profiles').upsert(
+          { id: userId, email: email, is_admin: true },
+          { onConflict: 'id' }
+        );
+      }
+
+      msgEl.textContent = 'Invite sent to ' + email + '!';
+      msgEl.style.color = '#2D7A4F';
+      btn.disabled = false; btn.textContent = 'Send Invite';
+      setTimeout(function() {
+        document.getElementById('invite-form-wrap').style.display = 'none';
+        loadUsersTable();
+      }, 2000);
+    });
 
     // ── Load deals table ──────────────────────────────────────────────────────
     async function loadDealsTable() {
