@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rate Management — Invest Heimish</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <div id="page" class="dashboard" style="display:none;">
+    <header class="admin-header">
+      <span class="admin-brand">Invest <span class="brand-gold">Heimish</span> — Rates</span>
+      <div class="admin-header-actions">
+        <a href="admin.html" class="btn-secondary">← Back to Admin</a>
+        <button id="logout-btn" class="btn-secondary">Logout</button>
+      </div>
+    </header>
+
+    <main style="flex:1; display:flex; align-items:flex-start; justify-content:center; padding:2.5rem 1.5rem;">
+      <div style="background:#fff; border-radius:var(--r-xl); box-shadow:var(--shadow-lg); padding:2.5rem 2.25rem; width:100%; max-width:480px;">
+        <h2 style="font-size:1.35rem; font-weight:800; color:var(--navy); letter-spacing:-0.02em; margin-bottom:0.35rem;">Rate Management</h2>
+        <p style="font-size:0.88rem; color:var(--text-soft); margin-bottom:2rem;">These rates appear in the scrolling banner on the homepage.</p>
+
+        <form id="rates-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="no-doc-rate">No-Doc Loan Rate (%)</label>
+              <input type="number" id="no-doc-rate" step="0.01" min="0" max="99.99" placeholder="e.g. 9.50" required>
+            </div>
+            <div class="form-group">
+              <label for="bridge-loan-rate">Bridge Loan Rate (%)</label>
+              <input type="number" id="bridge-loan-rate" step="0.01" min="0" max="99.99" placeholder="e.g. 10.25" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="rate-label">Banner Label</label>
+            <input type="text" id="rate-label" maxlength="60" placeholder="e.g. This Week's Rates">
+          </div>
+
+          <div style="margin-bottom:1.75rem; font-size:0.83rem; color:var(--text-soft);">
+            Last updated: <span id="last-updated">—</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-gold" id="save-btn">Save Rates</button>
+          </div>
+          <p id="form-msg" style="margin-top:0.9rem; font-size:0.88rem;"></p>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    var db;
+    try {
+      db = window.supabase.createClient(
+        'https://owavyvaparyftjxwcocr.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93YXZ5dmFwYXJ5ZnRqeHdjb2NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MzQ3NTIsImV4cCI6MjA5MjIxMDc1Mn0._c2i5hFpBa03yggCJGOsEJvtnnCBZD-AxOOJWJrNnVg'
+      );
+    } catch (e) {
+      console.error('Supabase init failed:', e);
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', async function() {
+      if (db) await db.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    function showMsg(text, ok) {
+      var el = document.getElementById('form-msg');
+      el.textContent = text;
+      el.style.color = ok ? '#2D7A4F' : '#DC2626';
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString();
+    }
+
+    async function loadRates() {
+      if (!db) return;
+      var res = await db.from('rates').select('*').single();
+      if (res.error || !res.data) return;
+      var d = res.data;
+      document.getElementById('no-doc-rate').value = d.no_doc_rate;
+      document.getElementById('bridge-loan-rate').value = d.bridge_loan_rate;
+      document.getElementById('rate-label').value = d.label || '';
+      document.getElementById('last-updated').textContent = fmtDate(d.updated_at);
+    }
+
+    document.getElementById('rates-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('save-btn');
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+      showMsg('', true);
+      var noDoc = parseFloat(document.getElementById('no-doc-rate').value);
+      var bridge = parseFloat(document.getElementById('bridge-loan-rate').value);
+      var label = document.getElementById('rate-label').value.trim() || "This Week's Rates";
+      if (isNaN(noDoc) || isNaN(bridge)) {
+        showMsg('Please enter valid rates.', false);
+        btn.disabled = false;
+        btn.textContent = 'Save Rates';
+        return;
+      }
+      try {
+        var res = await db.from('rates').update({
+          no_doc_rate: noDoc,
+          bridge_loan_rate: bridge,
+          label: label
+        }).eq('id', 1);
+        if (res.error) throw res.error;
+        showMsg('Rates saved successfully.', true);
+        await loadRates();
+      } catch (err) {
+        showMsg('Error: ' + (err.message || 'Could not save rates.'), false);
+      }
+      btn.disabled = false;
+      btn.textContent = 'Save Rates';
+    });
+
+    // Admin guard
+    (async function() {
+      if (!db) return;
+      var userRes = await db.auth.getUser();
+      var user = userRes && userRes.data ? userRes.data.user : null;
+      if (!user) {
+        sessionStorage.setItem('returnUrl', 'admin-rates.html');
+        window.location.href = 'login.html';
+        return;
+      }
+      var profRes = await db.from('profiles').select('is_admin').eq('id', user.id).single();
+      var isAdmin = profRes && profRes.data && profRes.data.is_admin === true;
+      if (!isAdmin) {
+        window.location.href = 'index.html';
+        return;
+      }
+      document.getElementById('page').style.display = 'flex';
+      await loadRates();
+    })();
+  </script>
+</body>
+</html>
