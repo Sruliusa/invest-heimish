@@ -23,6 +23,7 @@ BEGIN
 END;
 $$;
 
+DROP TRIGGER IF EXISTS rates_updated_at ON rates;
 CREATE TRIGGER rates_updated_at
   BEFORE UPDATE ON rates
   FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
