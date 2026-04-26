@@ -13,13 +13,13 @@
 
   <div class="page">
 
-    <!-- Rates ticker — sits right below the fixed navbar -->
+    <!-- Rates ticker — positioned flush under navbar by JS -->
     <div class="rates-ticker" id="rates-ticker">
-      <div class="rates-ticker__track" id="rates-ticker-track"><span>🏦 No-Doc Loan: —% &nbsp;&nbsp;·&nbsp;&nbsp; Bridge Loan: —% &nbsp;&nbsp;·&nbsp;&nbsp; Today's Rates &nbsp;&nbsp;·&nbsp;&nbsp; Call Us Today &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>🏦 No-Doc Loan: —% &nbsp;&nbsp;·&nbsp;&nbsp; Bridge Loan: —% &nbsp;&nbsp;·&nbsp;&nbsp; Today's Rates &nbsp;&nbsp;·&nbsp;&nbsp; Call Us Today &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+      <div class="rates-ticker__track" id="rates-ticker-track"><span>&#x1F3E6; No-Doc Loan: &mdash;% &nbsp;&nbsp;&middot;&nbsp;&nbsp; Bridge Loan: &mdash;% &nbsp;&nbsp;&middot;&nbsp;&nbsp; Today's Rates &nbsp;&nbsp;&middot;&nbsp;&nbsp; Call Us Today &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&#x1F3E6; No-Doc Loan: &mdash;% &nbsp;&nbsp;&middot;&nbsp;&nbsp; Bridge Loan: &mdash;% &nbsp;&nbsp;&middot;&nbsp;&nbsp; Today's Rates &nbsp;&nbsp;&middot;&nbsp;&nbsp; Call Us Today &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
     </div>
 
-    <!-- Hero — padded top so content clears the fixed navbar -->
-    <section class="hero" style="padding-top: 6rem;">
+    <!-- Hero — height sized by JS to fill viewport below ticker -->
+    <section class="hero" id="main-hero">
       <p class="hero-eyebrow">Real Estate Investing Made Simple</p>
       <h1>Your Partner in<br><span class="accent">Real Estate Investing</span></h1>
       <p class="hero-sub">
@@ -42,14 +42,14 @@
           <div class="invest-option-label">Low Risk</div>
           <h3 class="invest-option-title">Stable Income</h3>
           <p class="invest-option-sub">Move-in ready or already rented properties. Steady cash flow from day one, no construction needed.</p>
-          <p class="invest-option-return">6–10% returns</p>
+          <p class="invest-option-return">6&ndash;10% returns</p>
           <span class="btn btn-primary" style="align-self:flex-start; margin-top:auto;">View Deals</span>
         </a>
         <a class="invest-option invest-option--medium" href="deals.html?filter=medium">
           <div class="invest-option-label">Medium Risk</div>
           <h3 class="invest-option-title">Value-Add</h3>
           <p class="invest-option-sub">Light renovation to increase value and rental income. Option to refinance and pull cash out.</p>
-          <p class="invest-option-return">12–20% returns</p>
+          <p class="invest-option-return">12&ndash;20% returns</p>
           <span class="btn btn-primary" style="align-self:flex-start; margin-top:auto;">View Deals</span>
         </a>
         <a class="invest-option invest-option--high" href="deals.html?filter=high">
@@ -69,15 +69,15 @@
         <p class="section-subtitle">We stay with you every step of the way</p>
       </div>
       <div class="services-grid">
-        <div class="service-item"><span class="service-mark">✓</span><span>Finding the right investment property</span></div>
-        <div class="service-item"><span class="service-mark">✓</span><span>Securing your mortgage</span></div>
-        <div class="service-item"><span class="service-mark">✓</span><span>Connecting you with contractors</span></div>
-        <div class="service-item"><span class="service-mark">✓</span><span>Helping you refinance and pull cash out</span></div>
-        <div class="service-item"><span class="service-mark">✓</span><span>Property management connections</span></div>
-        <div class="service-item"><span class="service-mark">✓</span><span>Insurance (property &amp; title)</span></div>
-        <div class="service-item"><span class="service-mark">✓</span><span>Rental &amp; leasing support</span></div>
+        <div class="service-item"><span class="service-mark">&#x2713;</span><span>Finding the right investment property</span></div>
+        <div class="service-item"><span class="service-mark">&#x2713;</span><span>Securing your mortgage</span></div>
+        <div class="service-item"><span class="service-mark">&#x2713;</span><span>Connecting you with contractors</span></div>
+        <div class="service-item"><span class="service-mark">&#x2713;</span><span>Helping you refinance and pull cash out</span></div>
+        <div class="service-item"><span class="service-mark">&#x2713;</span><span>Property management connections</span></div>
+        <div class="service-item"><span class="service-mark">&#x2713;</span><span>Insurance (property &amp; title)</span></div>
+        <div class="service-item"><span class="service-mark">&#x2713;</span><span>Rental &amp; leasing support</span></div>
       </div>
-      <p class="services-tagline">You don't need to figure it out alone — we bring the whole team to you.</p>
+      <p class="services-tagline">You don't need to figure it out alone &mdash; we bring the whole team to you.</p>
     </section>
 
     <!-- How It Works -->
@@ -99,7 +99,7 @@
         <div class="step-card">
           <div class="step-icon">3</div>
           <h3 class="step-title">Close &amp; Grow</h3>
-          <p class="step-text">Renovate, refinance, and repeat — we guide you through it all</p>
+          <p class="step-text">Renovate, refinance, and repeat &mdash; we guide you through it all</p>
         </div>
       </div>
     </section>
@@ -128,32 +128,44 @@
   <script src="data.js"></script>
   <script src="components.js"></script>
   <script>
-    // Transparent navbar over hero, solid once scrolled
-    var navbar = document.querySelector(".navbar");
-    if (navbar) {
-      navbar.classList.add("navbar--over-hero");
-      window.addEventListener("scroll", function() {
-        if (window.scrollY > 60) {
-          navbar.classList.remove("navbar--over-hero");
-        } else {
-          navbar.classList.add("navbar--over-hero");
-        }
-      });
-    }
+    document.addEventListener("DOMContentLoaded", function() {
+      var navbar = document.querySelector(".navbar");
+      var ticker = document.getElementById("rates-ticker");
+      var hero   = document.getElementById("main-hero");
+
+      // Transparent navbar over hero, solid once scrolled
+      if (navbar) {
+        navbar.classList.add("navbar--over-hero");
+        window.addEventListener("scroll", function() {
+          navbar.classList.toggle("navbar--over-hero", window.scrollY <= 60);
+        });
+      }
+
+      // Flush ticker directly under navbar; size hero to fill remaining viewport
+      if (navbar && ticker && hero) {
+        var navH = navbar.getBoundingClientRect().height;
+        ticker.style.marginTop = navH + "px";
+        ticker.style.top = navH + "px";
+        requestAnimationFrame(function() {
+          var tickerH = ticker.getBoundingClientRect().height;
+          hero.style.minHeight = "calc(100vh - " + (navH + tickerH) + "px)";
+        });
+      }
+    });
 
     if (typeof initNavAuth === "function") initNavAuth();
 
     // Rates ticker — fetch live rates and populate the scrolling strip
     (async function() {
-      var track = document.getElementById('rates-ticker-track');
+      var track = document.getElementById("rates-ticker-track");
       if (!track) return;
       try {
-        var res = await supabase.from('rates').select('*').single();
+        var res = await supabase.from("rates").select("*").single();
         if (res.error || !res.data) return;
         var d = res.data;
-        var sep = '  ·  ';
-        var text = '🏦 No-Doc Loan: ' + d.no_doc_rate + '%' + sep + 'Bridge Loan: ' + d.bridge_loan_rate + '%' + sep + d.label + sep + 'Call Us Today      ';
-        track.innerHTML = '<span>' + text + '</span><span>' + text + '</span>';
+        var sep = "  ·  ";
+        var text = "🏦 No-Doc Loan: " + d.no_doc_rate + "%" + sep + "Bridge Loan: " + d.bridge_loan_rate + "%" + sep + d.label + sep + "Call Us Today      ";
+        track.innerHTML = "<span>" + text + "</span><span>" + text + "</span>";
       } catch (e) { /* keep placeholder */ }
     })();
 

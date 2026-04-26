@@ -354,10 +354,9 @@ button { font-family: inherit; }
 /* ── Rates ticker ─────────────────────────────────────────────────────────── */
 .rates-ticker {
   position: sticky;
-  top: 60px;
+  top: 0;
   z-index: 99;
   width: 100%;
-  margin-top: 60px;
   overflow: hidden;
   background: var(--gold);
   border-bottom: 2px solid var(--gold-dark);
