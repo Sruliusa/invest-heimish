@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin.html
+Disallow: /admin-rates.html
+Disallow: /login.html
+Disallow: /deal.html
+
+Sitemap: https://investheimish.com/sitemap.xml
