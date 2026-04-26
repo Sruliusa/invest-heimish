@@ -1796,3 +1796,215 @@ button { font-family: inherit; }
 
 .pub-login-form .form-group:last-of-type { margin-bottom: 1.5rem; }
 
+/* ── Mortgage calculator ─────────────────────────────────────────────────── */
+.calc-hero {
+  text-align: center;
+  padding: 3.5rem 1.5rem 2rem;
+  background: linear-gradient(160deg, var(--navy-deep) 0%, var(--navy-mid) 100%);
+  color: #fff;
+}
+
+.calc-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.6rem;
+}
+
+.calc-hero h1 .accent { color: var(--gold); }
+
+.calc-hero p {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.68);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.calc-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.calc-panel {
+  background: #fff;
+  border-radius: var(--r-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.calc-panel-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: 1.5rem;
+}
+
+/* Loan type toggle */
+.calc-toggle {
+  display: flex;
+  gap: 0;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.calc-toggle-btn {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: #fff;
+  color: var(--text-mid);
+  transition: var(--trans);
+}
+
+.calc-toggle-btn.active {
+  background: var(--navy);
+  color: #fff;
+}
+
+.calc-toggle-btn:not(.active):hover {
+  background: var(--beige);
+}
+
+/* Input fields */
+.calc-field {
+  margin-bottom: 1.1rem;
+}
+
+.calc-field label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+
+.calc-field label span {
+  font-weight: 400;
+  color: var(--text-soft);
+}
+
+.calc-field input,
+.calc-field select {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--warm-white);
+  transition: var(--trans);
+}
+
+.calc-field input:focus,
+.calc-field select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(200,155,60,0.1);
+  background: #fff;
+}
+
+/* Results */
+.calc-output-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--text-mid);
+}
+
+.calc-output-row:last-of-type { border-bottom: none; }
+
+.calc-output-row strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.calc-total {
+  margin-top: 0.5rem;
+  padding: 0.85rem 1rem;
+  background: var(--beige-2);
+  border-radius: var(--r-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--navy);
+}
+
+.calc-total-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.calc-cashflow {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--r-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: rgba(45,122,79,0.08);
+  color: var(--green);
+}
+
+.calc-cashflow.negative {
+  background: rgba(220,38,38,0.07);
+  color: #DC2626;
+}
+
+.calc-cashflow-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.calc-coc {
+  margin-top: 0.6rem;
+  text-align: right;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+}
+
+.calc-cta-wrap {
+  margin-top: 1.75rem;
+  text-align: center;
+}
+
+.calc-disclaimer {
+  max-width: 960px;
+  margin: 0 auto 2rem;
+  padding: 0 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .calc-card {
+    grid-template-columns: 1fr;
+    padding: 1.5rem 1rem;
+    gap: 1.25rem;
+  }
+}
+

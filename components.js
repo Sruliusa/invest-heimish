@@ -24,6 +24,7 @@ function renderNavbar() {
         '<a href="guide.html" class="nav-link' + (current === "guide.html" ? " active" : "") + '">Investor Guide</a>' +
         '<a href="about.html" class="nav-link' + (current === "about.html" ? " active" : "") + '">About</a>' +
         '<a href="contact.html" class="nav-link' + (current === "contact.html" ? " active" : "") + '">Contact</a>' +
+        '<a href="calculator.html" class="nav-link' + (current === "calculator.html" ? " active" : "") + '">Calculator</a>' +
       '</nav>' +
       '<a class="navbar-cta" href="contact.html">Talk to Us</a>' +
     '</div>';

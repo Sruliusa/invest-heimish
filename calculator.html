@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mortgage Calculator — Invest Heimish</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <div class="calc-hero">
+      <p class="hero-eyebrow" style="animation:none;">Run the Numbers</p>
+      <h1>Mortgage <span class="accent">Calculator</span></h1>
+      <p>Estimate your monthly payment and cash flow using our current loan rates.</p>
+    </div>
+
+    <div class="calc-card">
+
+      <!-- Inputs -->
+      <div class="calc-panel">
+        <p class="calc-panel-title">Loan Details</p>
+
+        <div class="calc-toggle" id="loan-toggle">
+          <button class="calc-toggle-btn active" data-type="nodoc">No-Doc Loan</button>
+          <button class="calc-toggle-btn" data-type="bridge">Bridge Loan</button>
+        </div>
+
+        <div class="calc-field">
+          <label for="purchase-price">Purchase Price <span>($)</span></label>
+          <input type="number" id="purchase-price" min="0" step="1000" placeholder="e.g. 450000" value="450000">
+        </div>
+
+        <div class="calc-field">
+          <label for="down-payment-pct">Down Payment <span id="down-dollar"></span></label>
+          <input type="number" id="down-payment-pct" min="0" max="100" step="0.5" placeholder="e.g. 20" value="20">
+        </div>
+
+        <div class="calc-field">
+          <label for="loan-term">Loan Term</label>
+          <select id="loan-term">
+            <option value="10">10 years</option>
+            <option value="15">15 years</option>
+            <option value="20">20 years</option>
+            <option value="25">25 years</option>
+            <option value="30" selected>30 years</option>
+          </select>
+        </div>
+
+        <div class="calc-field">
+          <label for="interest-rate">Interest Rate <span>(%/yr) — pre-filled from loan type</span></label>
+          <input type="number" id="interest-rate" min="0" max="99.99" step="0.01" placeholder="e.g. 9.50" value="9.50">
+        </div>
+
+        <p class="calc-panel-title" style="margin-top:1.5rem;">Monthly Costs &amp; Income</p>
+
+        <div class="calc-field">
+          <label for="prop-taxes">Property Taxes <span>($/mo)</span></label>
+          <input type="number" id="prop-taxes" min="0" step="10" placeholder="e.g. 400" value="400">
+        </div>
+
+        <div class="calc-field">
+          <label for="insurance">Insurance <span>($/mo)</span></label>
+          <input type="number" id="insurance" min="0" step="10" placeholder="e.g. 150" value="150">
+        </div>
+
+        <div class="calc-field">
+          <label for="rental-income">Monthly Rental Income <span>($)</span></label>
+          <input type="number" id="rental-income" min="0" step="50" placeholder="e.g. 3500" value="3500">
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="calc-panel">
+        <p class="calc-panel-title">Your Estimate</p>
+
+        <div class="calc-output-row">
+          <span>Monthly Principal &amp; Interest</span>
+          <strong id="out-pi">$—</strong>
+        </div>
+        <div class="calc-output-row">
+          <span>Property Taxes</span>
+          <strong id="out-tax">$—</strong>
+        </div>
+        <div class="calc-output-row">
+          <span>Insurance</span>
+          <strong id="out-ins">$—</strong>
+        </div>
+
+        <div class="calc-total">
+          <span>Total Monthly Payment (PITI)</span>
+          <span class="calc-total-value" id="out-piti">$—</span>
+        </div>
+
+        <div class="calc-cashflow" id="cashflow-box">
+          <span>Net Monthly Cash Flow</span>
+          <span class="calc-cashflow-value" id="out-cashflow">$—</span>
+        </div>
+
+        <p class="calc-coc" id="out-coc"></p>
+
+        <div class="calc-cta-wrap">
+          <p style="font-size:0.88rem; color:var(--text-soft); margin-bottom:1rem;">
+            Ready to move forward? We'll structure the financing for you.
+          </p>
+          <a class="btn btn-gold" href="contact.html">Talk to Us</a>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="calc-disclaimer">
+      This calculator provides estimates for informational purposes only and does not constitute a loan offer or commitment.
+      Actual rates, payments, and terms may vary. Contact us for a personalized quote.
+    </p>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    if (typeof initNavAuth === "function") initNavAuth();
+
+    // Current rates fetched from Supabase
+    var liveRates = { nodoc: 9.50, bridge: 10.25 };
+    var activeType = 'nodoc';
+
+    function fmtMoney(n) {
+      if (!isFinite(n)) return '$—';
+      return '$' + Math.round(n).toLocaleString();
+    }
+
+    function fmtPct(n) {
+      if (!isFinite(n)) return '—';
+      return n.toFixed(2) + '%';
+    }
+
+    function calcPI(principal, annualRate, years) {
+      if (principal <= 0 || years <= 0) return 0;
+      var r = annualRate / 100 / 12;
+      var n = years * 12;
+      if (r === 0) return principal / n;
+      return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    }
+
+    function recalculate() {
+      var price     = parseFloat(document.getElementById('purchase-price').value)  || 0;
+      var dpPct     = parseFloat(document.getElementById('down-payment-pct').value) || 0;
+      var years     = parseInt(document.getElementById('loan-term').value)          || 30;
+      var rate      = parseFloat(document.getElementById('interest-rate').value)    || 0;
+      var taxes     = parseFloat(document.getElementById('prop-taxes').value)       || 0;
+      var ins       = parseFloat(document.getElementById('insurance').value)        || 0;
+      var income    = parseFloat(document.getElementById('rental-income').value)    || 0;
+
+      var dp        = price * (dpPct / 100);
+      var loan      = price - dp;
+      var pi        = calcPI(loan, rate, years);
+      var piti      = pi + taxes + ins;
+      var cashflow  = income - piti;
+      var annualCF  = cashflow * 12;
+      var coc       = dp > 0 ? (annualCF / dp) * 100 : 0;
+
+      // Update down payment dollar hint
+      document.getElementById('down-dollar').textContent = dp > 0 ? '(' + fmtMoney(dp) + ')' : '';
+
+      document.getElementById('out-pi').textContent       = fmtMoney(pi);
+      document.getElementById('out-tax').textContent      = fmtMoney(taxes);
+      document.getElementById('out-ins').textContent      = fmtMoney(ins);
+      document.getElementById('out-piti').textContent     = fmtMoney(piti);
+      document.getElementById('out-cashflow').textContent = (cashflow >= 0 ? '+' : '') + fmtMoney(cashflow);
+
+      var cfBox = document.getElementById('cashflow-box');
+      if (cashflow < 0) cfBox.classList.add('negative');
+      else              cfBox.classList.remove('negative');
+
+      var cocEl = document.getElementById('out-coc');
+      if (dp > 0) {
+        cocEl.textContent = 'Cash-on-cash return: ' + fmtPct(coc) + ' / yr';
+      } else {
+        cocEl.textContent = '';
+      }
+    }
+
+    // Loan type toggle
+    document.getElementById('loan-toggle').addEventListener('click', function(e) {
+      var btn = e.target.closest('.calc-toggle-btn');
+      if (!btn) return;
+      document.querySelectorAll('.calc-toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeType = btn.getAttribute('data-type');
+      document.getElementById('interest-rate').value = activeType === 'bridge' ? liveRates.bridge : liveRates.nodoc;
+      recalculate();
+    });
+
+    // Wire all inputs to recalculate
+    ['purchase-price','down-payment-pct','loan-term','interest-rate','prop-taxes','insurance','rental-income']
+      .forEach(function(id) {
+        document.getElementById(id).addEventListener('input', recalculate);
+      });
+
+    // Fetch live rates and pre-fill
+    (async function() {
+      try {
+        var res = await supabase.from('rates').select('no_doc_rate,bridge_loan_rate').single();
+        if (!res.error && res.data) {
+          liveRates.nodoc  = parseFloat(res.data.no_doc_rate)  || 9.50;
+          liveRates.bridge = parseFloat(res.data.bridge_loan_rate) || 10.25;
+          document.getElementById('interest-rate').value = liveRates.nodoc;
+        }
+      } catch (e) { /* use defaults */ }
+      recalculate();
+    })();
+  </script>
+</body>
+</html>
