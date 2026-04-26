@@ -203,7 +203,7 @@ button { font-family: inherit; }
   border-radius: var(--r-sm);
   font-weight: 500;
   font-size: 0.95rem;
-  color: #555;
+  color: var(--navy);
   transition: var(--trans);
 }
 

@@ -133,18 +133,9 @@
       var ticker = document.getElementById("rates-ticker");
       var hero   = document.getElementById("main-hero");
 
-      // Transparent navbar over hero, solid once scrolled
-      if (navbar) {
-        navbar.classList.add("navbar--over-hero");
-        window.addEventListener("scroll", function() {
-          navbar.classList.toggle("navbar--over-hero", window.scrollY <= 60);
-        });
-      }
-
       // Flush ticker directly under navbar; size hero to fill remaining viewport
       if (navbar && ticker && hero) {
         var navH = navbar.getBoundingClientRect().height;
-        ticker.style.marginTop = navH + "px";
         ticker.style.top = navH + "px";
         requestAnimationFrame(function() {
           var tickerH = ticker.getBoundingClientRect().height;
